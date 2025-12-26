@@ -1,0 +1,41 @@
+Package: vcpkg-cmake
+Version: 2024-04-23
+Architecture: x64-windows
+Multi-Arch: same
+Abi: d43e8bf12adbaaa1e85bfc05814400e4752ce76e41c40b1a3e3ece383ad30fff
+Status: install ok installed
+
+Package: zlib
+Version: 1.3.1
+Depends: vcpkg-cmake
+Architecture: x64-windows
+Multi-Arch: same
+Abi: ce9508984d6a2dcdba07adfb8cd828817ab6c84cebe7b5a4d3d699e5b37077fe
+Description: A compression library
+Status: install ok installed
+
+Package: vcpkg-cmake-config
+Version: 2024-05-23
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 655efa64ebf71594c4ebbaf974b6fac415fcf3705b07101483ab9b445749ab23
+Status: install ok installed
+
+Package: utfcpp
+Version: 4.0.6
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 7532861a8c19779e039481e35692813f8a366cbe3139269e55bed44e6c6be5c8
+Description: UTF-8 with C++ in a Portable Way
+Status: install ok installed
+
+Package: taglib
+Version: 2.0.2
+Depends: utfcpp, vcpkg-cmake, vcpkg-cmake-config, zlib
+Architecture: x64-windows
+Multi-Arch: same
+Abi: c33e33582717cba6d278dbbc9755543fcf99f84e0fe23f3c5d21033fafecf92d
+Description: TagLib Audio Meta-Data Library
+Status: install ok installed
+
