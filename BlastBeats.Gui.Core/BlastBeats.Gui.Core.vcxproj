@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{09dd948e-f8ba-413d-ba24-bc9c65cb8631}</ProjectGuid>
-    <RootNamespace>BlastBeats</RootNamespace>
+    <ProjectGuid>{4223d2cf-689f-4a7f-aa89-aee8623988cd}</ProjectGuid>
+    <RootNamespace>BlastBeatsGuiCore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>BlastBeats.Core</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -107,13 +106,11 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\git\BlastBeats\Patterns;C:\libraries\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\git\BlastBeats\Patterns;D:\git\BlastBeats\BlastBeats;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\libraries\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-window-d.lib;sfml-audio-d.lib;sfml-system-s-d.lib;FLACd.lib;vorbisencd.lib;vorbisfiled.lib;vorbisd.lib;oggd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,27 +122,23 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\git\BlastBeats\Patterns;C:\libraries\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\git\BlastBeats\Patterns;D:\git\BlastBeats\BlastBeats;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\libraries\SFML-3.0.2\lib;C:\libraries\taglib-2.1.1\taglib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-window.lib;sfml-audio.lib;sfml-system-s.lib;FLAC.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;tag.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AppState.h" />
-    <ClInclude Include="Messages.h" />
-    <ClInclude Include="MusicDirectories.h" />
-    <ClInclude Include="Observers.h" />
-    <ClInclude Include="Songs.h" />
-    <ClInclude Include="Uuid.h" />
+    <ClInclude Include="GuiState.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppState.cpp" />
-    <ClCompile Include="Songs.cpp" />
-    <ClCompile Include="MusicDirectories.cpp" />
+    <ProjectReference Include="..\BlastBeats\BlastBeats.vcxproj">
+      <Project>{09dd948e-f8ba-413d-ba24-bc9c65cb8631}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GuiState.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

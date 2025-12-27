@@ -1,4 +1,5 @@
 #pragma once
+#include <MusicDirectories.h>
 #include <Songs.h>
 #include "external/imgui/imgui.h"
 #include <vector>

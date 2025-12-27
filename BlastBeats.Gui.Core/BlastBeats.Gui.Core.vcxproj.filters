@@ -15,33 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AppState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Songs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MusicDirectories.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Observers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messages.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Uuid.h">
+    <ClInclude Include="GuiState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Songs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MusicDirectories.cpp">
+    <ClCompile Include="GuiState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
