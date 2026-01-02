@@ -7,6 +7,7 @@
 #include <locale>
 #include <codecvt>
 #include "AppState.h"
+#include "WindowsHelpers.h"
 
 static std::wstring FileOpenDialog()
 {
@@ -47,16 +48,6 @@ static std::wstring FileOpenDialog()
     return std::wstring();
 }
 
-// windows-only conversion!!
-static std::string WCharToUtf8(const std::wstring& wstr)
-{
-    if (wstr.empty()) return std::string();
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-    std::string utf8str(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &utf8str[0], size_needed, NULL, NULL);
-    return utf8str;
-}
-
 void MusicDirectoryGui::Render(std::shared_ptr<AppState::ApplicationState> appState)
 {
 	ImGui::Begin("Music Directories");
@@ -69,7 +60,7 @@ void MusicDirectoryGui::Render(std::shared_ptr<AppState::ApplicationState> appSt
 	for (int i = 0; i < musicDirs.size(); i++)
 	{
         auto& x = musicDirs[i];
-        const auto& dirPath = WCharToUtf8(x->m_DirPath); // todo - will this mess up formatting? is utf8 "enough"?
+        const auto& dirPath = Helpers::WCharToUtf8(x->m_DirPath);
         if (ImGui::Selectable(dirPath.c_str(), x->m_IsSelected))
             x->m_IsSelected = !musicDirs[i]->m_IsSelected;
 

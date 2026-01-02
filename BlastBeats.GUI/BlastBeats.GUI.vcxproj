@@ -159,6 +159,7 @@
     <ClInclude Include="MainGui.h" />
     <ClInclude Include="MusicDirectoryGui.h" />
     <ClInclude Include="SongsTable.h" />
+    <ClInclude Include="WindowsHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlastBeats.Gui.Core\BlastBeats.Gui.Core.vcxproj">

@@ -62,9 +62,10 @@ static std::shared_ptr<Songs::Song> ReadSong(const uuids::uuid musicDirId, const
 	if (!fileref.isNull() && fileref.tag())
 	{
 		auto title = fileref.tag()->title().toWString();
+		auto album = fileref.tag()->album().toWString();
 		auto artist = fileref.tag()->artist().toWString();
 		auto genre = fileref.tag()->genre().toWString();
-		return std::make_shared<Songs::Song>(musicDirId, filepath, title, artist, genre);
+		return std::make_shared<Songs::Song>(musicDirId, filepath, title, album, artist, genre);
 	}
 	return std::make_shared<Songs::Song>();
 }
@@ -90,6 +91,11 @@ uuids::uuid Songs::Song::GetMusicDirectoryId()
 std::wstring Songs::Song::GetTitle()
 {
 	return m_Title;
+}
+
+std::wstring Songs::Song::GetAlbum()
+{
+	return m_Album;
 }
 
 std::wstring Songs::Song::GetArtist()

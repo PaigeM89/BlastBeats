@@ -16,24 +16,32 @@ namespace Songs {
 		uuids::uuid m_MusicDirId;
 		std::wstring m_Filepath{};
 		std::wstring m_Title{};
+		std::wstring m_Album{};
 		std::wstring m_Artist{};
 		std::wstring m_Genre{};
 	public:
 		Song() {};
-		Song(uuids::uuid musicDirId, std::wstring filepath, std::wstring title, std::wstring artist, std::wstring  genre) {
+		Song(uuids::uuid musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) {
 			m_MusicDirId = musicDirId;
 			m_Filepath = filepath;
 			m_Title = title;
+			m_Album = album;
 			m_Artist = artist;
 			m_Genre = genre;
 		}
 
 		uuids::uuid GetMusicDirectoryId();
 		std::wstring GetTitle();
+		std::wstring GetAlbum();
 		std::wstring GetArtist();
 		std::wstring GetGenre();
 
 		bool IsEmpty();
+
+		/// <summary>
+		/// Used in the UI to know if this song is currently selected by the user.
+		/// </summary>
+		bool p_IsSelected = false;
 	};
 
 	/// <summary>

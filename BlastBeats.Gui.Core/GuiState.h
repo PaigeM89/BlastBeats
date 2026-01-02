@@ -5,6 +5,8 @@
 #include <string>
 #include <Messages.h>
 
+// don't think i need any of this any more.
+
 namespace GuiState {
 
 	class MusicDirectoryState : public Observers::MusicDirectorySubject
