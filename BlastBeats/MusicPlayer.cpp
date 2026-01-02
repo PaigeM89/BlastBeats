@@ -16,8 +16,25 @@ void MusicPlayer::Player::StartCurrentSong()
 	music.play();
 }
 
-void MusicPlayer::Player::PlaySong(std::shared_ptr<Songs::Song> song)
+void MusicPlayer::Player::SetAndPlaySong(std::shared_ptr<Songs::Song> song)
 {
 	m_CurrentSong = song;
 	StartCurrentSong();
+}
+
+void MusicPlayer::Player::Play()
+{
+	if (m_CurrentSong == nullptr)
+		return;
+	StartCurrentSong();
+}
+
+void MusicPlayer::Player::Stop()
+{
+	music.pause();
+}
+
+std::shared_ptr<Songs::Song> MusicPlayer::Player::GetCurrentSong()
+{
+	return m_CurrentSong;
 }

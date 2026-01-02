@@ -144,6 +144,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGui.cpp" />
     <ClCompile Include="MusicDirectoryGui.cpp" />
+    <ClCompile Include="MusicPlayerGui.cpp" />
     <ClCompile Include="SongsTable.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="MainGui.h" />
     <ClInclude Include="MusicDirectoryGui.h" />
+    <ClInclude Include="MusicPlayerGui.h" />
     <ClInclude Include="SongsTable.h" />
     <ClInclude Include="WindowsHelpers.h" />
   </ItemGroup>

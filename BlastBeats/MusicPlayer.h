@@ -10,6 +10,9 @@ namespace MusicPlayer {
 		std::shared_ptr<Songs::Song> m_CurrentSong;
 		void StartCurrentSong();
 	public:
-		void PlaySong(std::shared_ptr<Songs::Song> song);
+		void SetAndPlaySong(std::shared_ptr<Songs::Song> song);
+		void Play();
+		void Stop();
+		std::shared_ptr<Songs::Song> GetCurrentSong();
 	};
 }

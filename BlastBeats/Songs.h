@@ -4,6 +4,7 @@
 #include <memory>
 #include <filesystem>
 #include <mutex>
+#include <taglib/fileref.h>
 #include "Uuid.h"
 
 namespace Songs {
@@ -20,17 +21,18 @@ namespace Songs {
 		std::wstring m_Album{};
 		std::wstring m_Artist{};
 		std::wstring m_Genre{};
+		int m_PlayTimeInSeconds = 0;
 	public:
 		Song()
 		{
 			m_Id = uuids::uuid_system_generator{}();
 		};
-		Song(uuids::uuid& musicDirId, std::wstring& filePath) : Song()
+		Song(const uuids::uuid& musicDirId, const std::wstring& filePath) : Song()
 		{
 			m_MusicDirId = musicDirId;
 			m_Filepath = filePath;
 		}
-		Song(uuids::uuid musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) : Song() 
+		Song(uuids::uuid& musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) : Song() 
 		{
 			m_MusicDirId = musicDirId;
 			m_Filepath = filepath;
@@ -39,6 +41,7 @@ namespace Songs {
 			m_Artist = artist;
 			m_Genre = genre;
 		}
+		Song(const uuids::uuid& musicDirId, const std::wstring& filepath, TagLib::FileRef& fileref);
 
 		uuids::uuid GetMusicDirectoryId();
 		uuids::uuid GetId() const;

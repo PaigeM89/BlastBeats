@@ -18,6 +18,7 @@
 #include <AppState.h>
 #include "MusicDirectoryGui.h"
 #include "SongsTable.h"
+#include "MusicPlayerGui.h"
 
 //#define APP_USE_UNLIMITED_FRAME_RATE
 #ifdef _DEBUG
@@ -477,6 +478,7 @@ int MainGui::RunGui(std::shared_ptr<AppState::ApplicationState> appState)
 
         MusicDirectoryGui::Render(appState);
         SongsTable::Render(appState);
+        MusicPlayerGui::Render(appState);
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {

@@ -61,11 +61,12 @@ static std::shared_ptr<Songs::Song> ReadSong(const uuids::uuid musicDirId, const
 	TagLib::FileRef fileref(filepath.c_str());
 	if (!fileref.isNull() && fileref.tag())
 	{
-		auto title = fileref.tag()->title().toWString();
-		auto album = fileref.tag()->album().toWString();
-		auto artist = fileref.tag()->artist().toWString();
-		auto genre = fileref.tag()->genre().toWString();
-		return std::make_shared<Songs::Song>(musicDirId, filepath, title, album, artist, genre);
+		return std::make_shared<Songs::Song>(musicDirId, filepath, fileref);
+		//auto title = fileref.tag()->title().toWString();
+		//auto album = fileref.tag()->album().toWString();
+		//auto artist = fileref.tag()->artist().toWString();
+		//auto genre = fileref.tag()->genre().toWString();
+		//return std::make_shared<Songs::Song>(musicDirId, filepath, title, album, artist, genre);
 	}
 	return std::make_shared<Songs::Song>();
 }
@@ -81,6 +82,15 @@ static void LoadAllSongs(const uuids::uuid musicDirId, std::shared_ptr<Songs::So
 	}
 	const auto& erased = std::erase_if(songs, [](auto& song) { return song->IsEmpty(); });
 	songList->AddRange(songs);
+}
+
+Songs::Song::Song(const uuids::uuid& musicDirId, const std::wstring& filepath, TagLib::FileRef& fileref) : Songs::Song::Song(musicDirId, filepath)
+{
+	m_Title = fileref.tag()->title().toWString();
+	m_Album = fileref.tag()->album().toWString();
+	m_Artist = fileref.tag()->artist().toWString();
+	m_Genre = fileref.tag()->genre().toWString();
+	m_PlayTimeInSeconds = fileref.audioProperties()->lengthInSeconds();
 }
 
 uuids::uuid Songs::Song::GetMusicDirectoryId()

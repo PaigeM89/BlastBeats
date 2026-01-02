@@ -28,7 +28,12 @@ void ApplicationState::RemoveDirectory(const std::wstring& directory)
 
 void AppState::ApplicationState::PlaySong(std::shared_ptr<Songs::Song> song)
 {
-	m_Player->PlaySong(song);
+	m_Player->SetAndPlaySong(song);
+}
+
+std::shared_ptr<Songs::Song> AppState::ApplicationState::GetCurrentSong()
+{
+	return m_Player->GetCurrentSong();
 }
 
 std::vector<std::shared_ptr<Songs::Song>> AppState::ApplicationState::GetSongs()
