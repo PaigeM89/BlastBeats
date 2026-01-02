@@ -4,41 +4,28 @@
 
 using namespace AppState;
 
+AppState::ApplicationState::ApplicationState()
+{
+	m_MusicDirectoryManager = std::make_shared<MusicDirectories::MusicDirectoryManager>();
+}
+
 std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> ApplicationState::GetMusicDirectories()
 {
-	return this->m_MusicDirectories;
+	return m_MusicDirectoryManager->GetMusicDirectories();
 }
 
-void ApplicationState::AddMusicDirectory(std::wstring dirPath)
+void ApplicationState::AddMusicDirectory(const std::wstring& dirPath)
 {
-	/*auto msd = MusicDirectories::CreateMusicDirectory(dirPath);
-	AddMusicDirectory(msd);*/
-	m_MusicDirectories.emplace_back(MusicDirectories::CreateMusicDirectory(dirPath));
+	m_MusicDirectoryManager->AddDirectory(dirPath);
+	//m_MusicDirectories.emplace_back(MusicDirectories::CreateMusicDirectory(dirPath));
 }
 
-void ApplicationState::RemoveDirectory(std::wstring directory)
+void ApplicationState::RemoveDirectory(const std::wstring& directory)
 {
-	size_t index;
-	bool wasSet = false;
-	for (size_t i = 0; i < m_MusicDirectories.size(); i++)
-	{
-		if (m_MusicDirectories[i]->DirPath == directory)
-		{
-			index = i;
-			wasSet = true;
-			break;
-		}
-	}
-	if (wasSet)
-	{
-		RemoveDirectory(index);
-	}
+	m_MusicDirectoryManager->RemoveDirectoryW(directory);
 }
 
-void ApplicationState::RemoveDirectory(size_t index)
+std::vector<std::shared_ptr<Songs::Song>> AppState::ApplicationState::GetSongs()
 {
-	if (m_MusicDirectories.size() > index && index > 0)
-	{
-		m_MusicDirectories.erase(m_MusicDirectories.begin() + index);
-	}
+	return m_MusicDirectoryManager->GetSongs();
 }

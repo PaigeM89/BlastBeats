@@ -39,7 +39,7 @@ namespace Songs {
 	/// <summary>
 	/// Thread-safe container to load songs and keep them in a single master list.
 	/// </summary>
-	class SongList {
+	class SongManager {
 	private:
 		std::vector<std::shared_ptr<Song>> m_Songs{};
 		mutable std::mutex m_Mutex;
@@ -51,7 +51,7 @@ namespace Songs {
 		void RemoveLoadingDir(const uuids::uuid dirId);
 		void LoadSongs(const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths);
 	public:
-		SongList(size_t reserveSize);
+		SongManager(size_t reserveSize);
 		void AddRange(const std::vector<std::shared_ptr<Song>>& songsToAdd);
 		std::vector<std::shared_ptr<Song>> GetSongs();
 

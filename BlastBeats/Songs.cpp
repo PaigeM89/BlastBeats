@@ -69,7 +69,7 @@ static std::shared_ptr<Songs::Song> ReadSong(const uuids::uuid musicDirId, const
 	return std::make_shared<Songs::Song>();
 }
 
-static void LoadAllSongs(const uuids::uuid musicDirId, std::shared_ptr<Songs::SongList> songList, const std::vector<std::wstring>& songPaths)
+static void LoadAllSongs(const uuids::uuid musicDirId, std::shared_ptr<Songs::SongManager> songList, const std::vector<std::wstring>& songPaths)
 {
 	std::vector<std::shared_ptr<Songs::Song>> songs(songPaths.size());
 	for (int i = 0; i < songPaths.size(); i++)
@@ -107,24 +107,24 @@ bool Songs::Song::IsEmpty()
 	return this == nullptr || m_Title.length() == 0 && m_Artist.length() == 0;
 }
 
-void Songs::SongList::AddRange(const std::vector<std::shared_ptr<Song>>& songsToAdd)
+void Songs::SongManager::AddRange(const std::vector<std::shared_ptr<Song>>& songsToAdd)
 {
 	std::lock_guard<std::mutex> lock(m_Mutex);
 	m_Songs.insert(m_Songs.end(), songsToAdd.begin(), songsToAdd.end());
 }
 
-std::vector<std::shared_ptr<Songs::Song>> Songs::SongList::GetSongs()
+std::vector<std::shared_ptr<Songs::Song>> Songs::SongManager::GetSongs()
 {
 	return m_Songs;
 }
 
-void Songs::SongList::AddLoadingDir(const uuids::uuid dirId)
+void Songs::SongManager::AddLoadingDir(const uuids::uuid dirId)
 {
 	std::lock_guard<std::mutex> loadingDirsLock(m_LoadingDirsMutex);
 	m_LoadingDirIds.push_back(dirId);
 }
 
-void Songs::SongList::RemoveLoadingDir(const uuids::uuid dirId)
+void Songs::SongManager::RemoveLoadingDir(const uuids::uuid dirId)
 {
 	std::lock_guard<std::mutex> loadingDirsLock(m_LoadingDirsMutex);
 	std::erase_if(this->m_LoadingDirIds, [&dirId](const uuids::uuid& id) {
@@ -132,7 +132,7 @@ void Songs::SongList::RemoveLoadingDir(const uuids::uuid dirId)
 		});
 }
 
-void Songs::SongList::LoadSongs(const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths)
+void Songs::SongManager::LoadSongs(const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths)
 {
 	std::vector<std::shared_ptr<Songs::Song>> songs(songPaths.size());
 	for (int i = 0; i < songPaths.size(); i++)
@@ -145,7 +145,7 @@ void Songs::SongList::LoadSongs(const uuids::uuid& musicDirId, const std::vector
 	this->AddRange(songs);
 }
 
-void Songs::SongList::LoadSongs(std::stop_token stopToken, const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths)
+void Songs::SongManager::LoadSongs(std::stop_token stopToken, const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths)
 {
 	this->AddLoadingDir(musicDirId);
 	std::vector<std::shared_ptr<Songs::Song>> songs(songPaths.size());
@@ -190,19 +190,19 @@ void Songs::SongList::LoadSongs(std::stop_token stopToken, const uuids::uuid& mu
 	this->RemoveLoadingDir(musicDirId);
 }
 
-void Songs::SongList::RemoveSongsWithDirectoryId(const uuids::uuid& musicDirId)
+void Songs::SongManager::RemoveSongsWithDirectoryId(const uuids::uuid& musicDirId)
 {
 	std::erase_if(m_Songs, [&musicDirId](std::shared_ptr<Songs::Song>& song) {
 		return song->GetMusicDirectoryId() == musicDirId;
 		});
 }
 
-Songs::SongList::SongList(size_t reserveSize)
+Songs::SongManager::SongManager(size_t reserveSize)
 {
 	m_Songs.reserve(reserveSize);
 }
 
-bool Songs::SongList::IsLoadingSongs()
+bool Songs::SongManager::IsLoadingSongs()
 {
 	return this->m_LoadingDirIds.size() > 0;
 }

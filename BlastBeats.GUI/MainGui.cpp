@@ -17,6 +17,7 @@
 #include <memory>
 #include <AppState.h>
 #include "MusicDirectoryGui.h"
+#include "SongsTable.h"
 
 //#define APP_USE_UNLIMITED_FRAME_RATE
 #ifdef _DEBUG
@@ -340,7 +341,7 @@ static int ImGui_ImplWin32_CreateVkSurface(ImGuiViewport* viewport, ImU64 vk_ins
 }
 
 
-int MainGui::RunGui(std::shared_ptr<GuiState::GuiState> guiState)
+int MainGui::RunGui(std::shared_ptr<AppState::ApplicationState> appState)
 {
     // Make process DPI aware and obtain main monitor scale
     ImGui_ImplWin32_EnableDpiAwareness();
@@ -474,7 +475,8 @@ int MainGui::RunGui(std::shared_ptr<GuiState::GuiState> guiState)
         /*if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);*/
 
-        MusicDirectoryGui::Render(guiState);
+        MusicDirectoryGui::Render(appState);
+        SongsTable::Render(appState);
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {

@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-#include "GuiState.h"
+#include "AppState.h"
 
 namespace MusicDirectoryGui
 {
-	void Render(std::shared_ptr<GuiState::GuiState> guiState);
+	void Render(std::shared_ptr<AppState::ApplicationState> appState);
 }

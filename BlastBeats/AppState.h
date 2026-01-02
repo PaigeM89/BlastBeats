@@ -9,12 +9,12 @@ namespace AppState
 {
 	class ApplicationState {
 	private:
-		std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> m_MusicDirectories{};
-		std::vector<std::shared_ptr<Songs::Song>> m_Songs{};
+		std::shared_ptr<MusicDirectories::MusicDirectoryManager> m_MusicDirectoryManager;
 	public:
+		ApplicationState();
 		std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> GetMusicDirectories();
-		void AddMusicDirectory(std::wstring dirPath);
-		void RemoveDirectory(std::wstring directory);
-		void RemoveDirectory(size_t index);
+		std::vector<std::shared_ptr<Songs::Song>> GetSongs();
+		void AddMusicDirectory(const std::wstring& dirPath);
+		void RemoveDirectory(const std::wstring& directory);
 	};
 }

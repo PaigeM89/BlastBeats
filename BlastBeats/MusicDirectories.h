@@ -14,14 +14,28 @@ namespace MusicDirectories {
 	/// Basic data regarding a directory we should use to load music.
 	/// </summary>
 	struct MusicDirectory {
-		uuids::uuid Id;
-		std::wstring DirPath;
-		bool FlaggedForRemoval;
+		/// <summary>
+		/// Randomly generated UUID to more easily track this specific directory.
+		/// TODO: Do i need this any more? Unsure.
+		/// </summary>
+		uuids::uuid m_Id;
+		/// <summary>
+		/// The path to the directory to load music from.
+		/// </summary>
+		std::wstring m_DirPath;
+		/// <summary>
+		/// Used to determine if this directory and all music in it should be removed from the loaded data.
+		/// This does NOT flag the actual data on disk for deletion!
+		/// </summary>
+		bool m_FlaggedForRemoval = false;
+		/// <summary>
+		/// When TRUE, the user has this directory selected in the list box.
+		/// </summary>
+		bool m_IsSelected = false;
 
 		MusicDirectory(std::wstring dirPath) {
-			Id = uuids::uuid_system_generator{}();
-			DirPath = dirPath;
-			FlaggedForRemoval = false;
+			m_Id = uuids::uuid_system_generator{}();
+			m_DirPath = dirPath;
 		}
 	};
 
@@ -30,11 +44,11 @@ namespace MusicDirectories {
 	/// </summary>
 	struct SongLoadingThreadData
 	{
-		std::shared_ptr<Songs::SongList> m_SongManager;
+		std::shared_ptr<Songs::SongManager> m_SongManager;
 		std::shared_ptr<MusicDirectories::MusicDirectory> m_MusicDir;
 		bool m_IsCompleted = false;
 
-		SongLoadingThreadData(std::shared_ptr<Songs::SongList> songManager, std::shared_ptr<MusicDirectories::MusicDirectory> musicDir)
+		SongLoadingThreadData(std::shared_ptr<Songs::SongManager> songManager, std::shared_ptr<MusicDirectories::MusicDirectory> musicDir)
 		{
 			m_SongManager = songManager;
 			m_MusicDir = musicDir;
@@ -53,8 +67,8 @@ namespace MusicDirectories {
 	/// Controls the thread used to load song data from the specified directory.
 	/// </summary>
 	struct SongLoadingThreadManager {
-		SongLoadingThreadManager(std::shared_ptr<Songs::SongList> songManager, std::shared_ptr<MusicDirectories::MusicDirectory> musicDir) : _data(songManager, musicDir) {
-			wprintf(L"BLASTBEATS: Loading data in dir %s\n", _data.m_MusicDir->DirPath.c_str());
+		SongLoadingThreadManager(std::shared_ptr<Songs::SongManager> songManager, std::shared_ptr<MusicDirectories::MusicDirectory> musicDir) : _data(songManager, musicDir) {
+			wprintf(L"BLASTBEATS: Loading data in dir %s\n", _data.m_MusicDir->m_DirPath.c_str());
 			_thread = std::jthread(ReadSongsIntoSongManager, _data);
 		}
 
@@ -69,7 +83,7 @@ namespace MusicDirectories {
 
 		std::wstring GetMusicDirPath()
 		{
-			return _data.m_MusicDir->DirPath;
+			return _data.m_MusicDir->m_DirPath;
 		}
 
 		// delete these functions, according to AI
@@ -94,7 +108,7 @@ namespace MusicDirectories {
 	private:
 		std::vector<SongLoadingThreadManager> m_SongLoadingThreads{};
 		std::vector<std::shared_ptr<MusicDirectory>> m_MusicDirectories{};
-		std::shared_ptr<Songs::SongList> m_SongManager;
+		std::shared_ptr<Songs::SongManager> m_SongManager;
 
 		void ReadSongsInDirectory(std::shared_ptr<MusicDirectory> dir);
 		void RemoveSongsInDirectory(const std::wstring& dirPath);
@@ -102,14 +116,16 @@ namespace MusicDirectories {
 		uuids::uuid GetMusicDirId(const std::wstring& dirPath);
 	public:
 		MusicDirectoryManager();
-		void AddDirectory(std::wstring& dirPath);
-		void RemoveDirectory(std::wstring& directory);
-		void RemoveDirectory(uuids::uuid musicDirId);
+		void AddDirectory(const std::wstring& dirPath);
+		void RemoveDirectory(const std::wstring& directory);
+		void RemoveDirectory(const uuids::uuid musicDirId);
 		void Update(std::shared_ptr<Messages::MusicDirectoryChanged> msg) override;
 
 		bool IsLoadingSongs();
 		void CheckForCompletedThreads();
 		size_t GetSongCount();
+		std::vector<std::shared_ptr<MusicDirectory>> GetMusicDirectories();
+		std::vector<std::shared_ptr<Songs::Song>> GetSongs();
 
 		~MusicDirectoryManager();
 	};

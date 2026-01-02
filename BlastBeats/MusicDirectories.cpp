@@ -9,18 +9,18 @@ void MusicDirectories::ReadSongsIntoSongManager(std::stop_token stopToken, SongL
 {
 	if (threadData.m_IsCompleted)
 	{
-		wprintf(L"BLASTBEATS: Already completed loading songs for directory %s\n", threadData.m_MusicDir->DirPath.c_str());
+		wprintf(L"BLASTBEATS: Already completed loading songs for directory %s\n", threadData.m_MusicDir->m_DirPath.c_str());
 		return;
 	}
-	wprintf(L"BLASTBEATS: Loading songs in directory: %s\n", threadData.m_MusicDir->DirPath.c_str());
-	if (!std::filesystem::is_directory(threadData.m_MusicDir->DirPath))
+	wprintf(L"BLASTBEATS: Loading songs in directory: %s\n", threadData.m_MusicDir->m_DirPath.c_str());
+	if (!std::filesystem::is_directory(threadData.m_MusicDir->m_DirPath))
 	{
 		threadData.m_IsCompleted = true;
 		return;
 	}
 
-	auto songPaths = Songs::GetAllFilepaths(threadData.m_MusicDir->DirPath);
-	threadData.m_SongManager->LoadSongs(stopToken, threadData.m_MusicDir->Id, songPaths);
+	auto songPaths = Songs::GetAllFilepaths(threadData.m_MusicDir->m_DirPath);
+	threadData.m_SongManager->LoadSongs(stopToken, threadData.m_MusicDir->m_Id, songPaths);
 	threadData.m_IsCompleted = true;
 }
 
@@ -30,21 +30,21 @@ std::shared_ptr<MusicDirectories::MusicDirectory> MusicDirectories::CreateMusicD
     return std::make_shared<MusicDirectories::MusicDirectory>(dirPath);
 }
 
-void ReadSongsInDirectoryIntoSongList(std::stop_token stopToken, std::shared_ptr<Songs::SongList>& songList, std::shared_ptr<MusicDirectories::MusicDirectory> dir)
+void ReadSongsInDirectoryIntoSongList(std::stop_token stopToken, std::shared_ptr<Songs::SongManager>& songList, std::shared_ptr<MusicDirectories::MusicDirectory> dir)
 {
-	wprintf(L"BLASTBEATS: Loading songs in directory: %s\n", dir->DirPath.c_str());
-	if (!std::filesystem::is_directory(dir->DirPath))
+	wprintf(L"BLASTBEATS: Loading songs in directory: %s\n", dir->m_DirPath.c_str());
+	if (!std::filesystem::is_directory(dir->m_DirPath))
 	{
 		return;
 	}
 
-	auto songPaths = Songs::GetAllFilepaths(dir->DirPath);
-	songList->LoadSongs(stopToken, dir->Id, songPaths);
+	auto songPaths = Songs::GetAllFilepaths(dir->m_DirPath);
+	songList->LoadSongs(stopToken, dir->m_Id, songPaths);
 }
 
 void MusicDirectories::MusicDirectoryManager::ReadSongsInDirectory(std::shared_ptr<MusicDirectory> dir)
 {
-	wprintf(L"BLASTBEATS: Creating thread to load directory %s\n", dir->DirPath.c_str());
+	wprintf(L"BLASTBEATS: Creating thread to load directory %s\n", dir->m_DirPath.c_str());
 
 	m_SongLoadingThreads.emplace_back(SongLoadingThreadManager(this->m_SongManager, dir));
 }
@@ -53,8 +53,8 @@ uuids::uuid MusicDirectories::MusicDirectoryManager::GetMusicDirId(const std::ws
 {
 	for (auto& musicDir : m_MusicDirectories)
 	{
-		if (musicDir->DirPath == dirPath)
-			return musicDir->Id;
+		if (musicDir->m_DirPath == dirPath)
+			return musicDir->m_Id;
 	}
 	// todo: log here
 	return uuids::uuid();
@@ -73,25 +73,25 @@ void MusicDirectories::MusicDirectoryManager::RemoveSongsInDirectory(const uuids
 
 MusicDirectories::MusicDirectoryManager::MusicDirectoryManager()
 {
-	this->m_SongManager = std::make_shared<Songs::SongList>(0);
+	this->m_SongManager = std::make_shared<Songs::SongManager>(0);
 }
 
-void MusicDirectories::MusicDirectoryManager::AddDirectory(std::wstring& dirPath)
+void MusicDirectories::MusicDirectoryManager::AddDirectory(const std::wstring& dirPath)
 {
 	auto musicDir = CreateMusicDirectory(dirPath);
 	m_MusicDirectories.push_back(musicDir);
 	ReadSongsInDirectory(musicDir);
 }
 
-void MusicDirectories::MusicDirectoryManager::RemoveDirectory(std::wstring& directory)
+void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const std::wstring& directory)
 {
 	uuids::uuid dirId;
 	bool wasSet = false;
 	for (const auto& musicDir : m_MusicDirectories)
 	{
-		if (musicDir->DirPath == directory)
+		if (musicDir->m_DirPath == directory)
 		{
-			dirId = musicDir->Id;
+			dirId = musicDir->m_Id;
 			wasSet = true;
 		}
 	}
@@ -101,11 +101,11 @@ void MusicDirectories::MusicDirectoryManager::RemoveDirectory(std::wstring& dire
 	}
 }
 
-void MusicDirectories::MusicDirectoryManager::RemoveDirectory(uuids::uuid musicDirId)
+void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const uuids::uuid musicDirId)
 {
 	this->RemoveSongsInDirectory(musicDirId);
 	std::erase_if(m_MusicDirectories, [&musicDirId](const std::shared_ptr<MusicDirectories::MusicDirectory> musicDir) {
-			return musicDir->Id == musicDirId;
+			return musicDir->m_Id == musicDirId;
 		});
 }
 
@@ -115,9 +115,9 @@ void MusicDirectories::MusicDirectoryManager::Update(std::shared_ptr<Messages::M
 	{
 		for (auto& mdir : m_MusicDirectories)
 		{
-			if (mdir->Id == msg->Id)
+			if (mdir->m_Id == msg->Id)
 			{
-				mdir->FlaggedForRemoval = true;
+				mdir->m_FlaggedForRemoval = true;
 				return;
 			}
 		}
@@ -126,9 +126,9 @@ void MusicDirectories::MusicDirectoryManager::Update(std::shared_ptr<Messages::M
 	{
 		for (auto& mdir : m_MusicDirectories)
 		{
-			if (mdir->Id == msg->Id)
+			if (mdir->m_Id == msg->Id)
 			{
-				mdir->DirPath = msg->DirPath;
+				mdir->m_DirPath = msg->DirPath;
 				// todo: reload new directory, clean old songs as needed
 				return;
 			}
@@ -139,7 +139,8 @@ void MusicDirectories::MusicDirectoryManager::Update(std::shared_ptr<Messages::M
 
 bool MusicDirectories::MusicDirectoryManager::IsLoadingSongs()
 {
-	return m_SongManager->IsLoadingSongs();
+	//return m_SongManager->IsLoadingSongs();
+	return m_SongLoadingThreads.size() > 0;
 }
 
 void MusicDirectories::MusicDirectoryManager::CheckForCompletedThreads()
@@ -157,4 +158,14 @@ size_t MusicDirectories::MusicDirectoryManager::GetSongCount()
 MusicDirectories::MusicDirectoryManager::~MusicDirectoryManager()
 {
 	this->m_SongLoadingThreads.~vector();
+}
+
+std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> MusicDirectories::MusicDirectoryManager::GetMusicDirectories()
+{
+	return m_MusicDirectories;
+}
+
+std::vector<std::shared_ptr<Songs::Song>> MusicDirectories::MusicDirectoryManager::GetSongs()
+{
+	return m_SongManager->GetSongs();
 }

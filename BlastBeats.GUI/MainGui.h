@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-#include "GuiState.h"
+#include "AppState.h"
 
 namespace MainGui
 {
-	int RunGui(std::shared_ptr<GuiState::GuiState> appState);
+	int RunGui(std::shared_ptr<AppState::ApplicationState> appState);
 }

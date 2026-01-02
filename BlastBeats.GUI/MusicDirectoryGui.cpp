@@ -6,7 +6,7 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
-#include "GuiState.h"
+#include "AppState.h"
 
 static std::wstring FileOpenDialog()
 {
@@ -43,12 +43,6 @@ static std::wstring FileOpenDialog()
     if (pszFilePath != nullptr)
     {
         return pszFilePath;
-        /*std::wstringstream ss;
-        ss << pszFilePath;
-        CoTaskMemFree(static_cast<void*>(pszFilePath));
-        std::wstring ws = ss.str();
-        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-        return converter.to_bytes(ws);*/
     }
     return std::wstring();
 }
@@ -63,23 +57,23 @@ static std::string WCharToUtf8(const std::wstring& wstr)
     return utf8str;
 }
 
-void MusicDirectoryGui::Render(std::shared_ptr<GuiState::GuiState> guiState)
+void MusicDirectoryGui::Render(std::shared_ptr<AppState::ApplicationState> appState)
 {
 	ImGui::Begin("Music Directories");
 	ImGui::BeginListBox("Source Directories");
 
     std::vector<int> selectedIndexes{};
 
-    auto musicDirs = guiState->GetMusicDirectories();
+    auto musicDirs = appState->GetMusicDirectories();
 
 	for (int i = 0; i < musicDirs.size(); i++)
 	{
         auto& x = musicDirs[i];
-        const auto& dirPath = std::string("hello world"); // WCharToUtf8(x->MusicDirectory->DirPath);
-        if (ImGui::Selectable(dirPath.c_str(), x->p_IsSelected))
-            x->p_IsSelected = !musicDirs[i]->p_IsSelected;
+        const auto& dirPath = WCharToUtf8(x->m_DirPath); // todo - will this mess up formatting? is utf8 "enough"?
+        if (ImGui::Selectable(dirPath.c_str(), x->m_IsSelected))
+            x->m_IsSelected = !musicDirs[i]->m_IsSelected;
 
-        if (x->p_IsSelected)
+        if (x->m_IsSelected)
             selectedIndexes.push_back(i);
 	}
 
@@ -87,8 +81,8 @@ void MusicDirectoryGui::Render(std::shared_ptr<GuiState::GuiState> guiState)
 	if (ImGui::Button("AddMusicDir"))
 	{
         auto dirToAdd = FileOpenDialog();
-        /*if (dirToAdd.length() > 0)
-            appState->AddMusicDirectory(dirToAdd);*/
+        if (dirToAdd.length() > 0)
+            appState->AddMusicDirectory(dirToAdd);
 	}
     
     if (selectedIndexes.size() > 0)
@@ -97,7 +91,7 @@ void MusicDirectoryGui::Render(std::shared_ptr<GuiState::GuiState> guiState)
         {
             for (auto i : selectedIndexes)
             {
-                musicDirs[i]->SetFlaggedForRemoval();
+                musicDirs[i]->m_FlaggedForRemoval = true;
             }
         }
     }

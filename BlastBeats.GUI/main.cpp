@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <GuiState.h>
 
-static void printCoolBand(const std::shared_ptr<Songs::SongList> songList)
+static void printCoolBand(const std::shared_ptr<Songs::SongManager> songList)
 {
 	for (auto& song : songList->GetSongs())
 	{
@@ -23,7 +23,7 @@ int main(int, char**) {
 	printf("BLASTBEATS: Hello from Blastbeats!\n");
 	std::wcout.imbue(std::locale(""));
 
-	auto musicDirManager = std::make_shared<MusicDirectories::MusicDirectoryManager>();
+	/*auto musicDirManager = std::make_shared<MusicDirectories::MusicDirectoryManager>();
 
 	auto musicDirGuiState = std::make_shared<GuiState::MusicDirectoryState>();
 	std::shared_ptr<Observers::MusicDirectoryObserver> obs = musicDirManager;
@@ -46,11 +46,12 @@ int main(int, char**) {
 	
 
 	auto end = std::chrono::steady_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::chrono::duration<double> elapsed_seconds = end - start;*/
 
 	//printCoolBand(sl);
-
-	//auto returnCode = MainGui::RunGui(guiState);
+	
+	auto appState = std::make_shared<AppState::ApplicationState>();
+	auto returnCode = MainGui::RunGui(appState);
 	
 	return 0;
 }
