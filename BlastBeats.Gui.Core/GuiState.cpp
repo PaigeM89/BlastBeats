@@ -2,7 +2,7 @@
 #include <vector>
 #include "GuiState.h"
 
-std::vector<std::shared_ptr<GuiState::MusicDirectoryGuiState>> GuiState::GuiState::GetMusicDirectories()
+std::vector<std::shared_ptr<GuiState::MusicDirectoryState>> GuiState::GuiState::GetMusicDirectories()
 {
 	return m_MusicDirectories;
 }
@@ -10,17 +10,18 @@ std::vector<std::shared_ptr<GuiState::MusicDirectoryGuiState>> GuiState::GuiStat
 void GuiState::MusicDirectoryState::SetDirPath(const std::wstring& dirPath)
 {
 	this->m_DirPath = dirPath;
-	Notify();
+	auto msg = std::make_shared<Messages::MusicDirectoryChanged>();
+	msg->Id = this->Id;	
+	msg->DirPath = this->m_DirPath;
+	Notify(msg);
 }
 
-void GuiState::MusicDirectoryState::Notify()
+void GuiState::MusicDirectoryState::SetFlaggedForRemoval()
 {
-	const auto& msg = std::make_shared<Messages::MusicDirectoryChanged>(0, this->m_DirPath, this->m_FlaggedForRemoval);
-
-	for (const auto& observer : m_Observers)
-	{
-		observer->Update(msg);
-	}
+	this->m_FlaggedForRemoval = true;
+	auto msg = std::make_shared<Messages::MusicDirectoryChanged>();
+	msg->Id = this->Id;
+	msg->DirPath = this->m_DirPath;
+	msg->FlaggedForRemoval = true;
+	Notify(msg);
 }
-
-

@@ -1,3 +1,4 @@
+
 #ifndef STDUUID_H
 #define STDUUID_H
 
@@ -25,6 +26,9 @@
 
 #endif
 
+#ifndef UUID_SYSTEM_GENERATOR
+#define UUID_SYSTEM_GENERATOR
+#endif
 
 #ifdef LIBUUID_CPP20_OR_GREATER
 #include <span>

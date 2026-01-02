@@ -1,5 +1,5 @@
 #pragma once
-#include <Observer.h>
+#include <Observers.h>
 #include <memory>
 #include <vector>
 #include <string>
@@ -7,37 +7,25 @@
 
 namespace GuiState {
 
-	struct MusicDirectoryGuiState {
-		//std::shared_ptr<MusicDirectories::MusicDirectory> MusicDirectory;
-		std::wstring DirPath;
-		/// <summary>
-		/// The user has this directory currently selected in the UI.
-		/// </summary>
-		bool IsSelected;
-		/// <summary>
-		/// This directory is flagged to be removed from the directories that files are read from.
-		/// This does NOT delete the directory from the system!
-		/// </summary>
-		bool FlaggedForRemoval;
-	};
-
-	class MusicDirectoryState : public Observers::Subject<Messages::MusicDirectoryChanged> {
+	class MusicDirectoryState : public Observers::MusicDirectorySubject
+	{
 	private:
+		uuids::uuid Id;
 		std::wstring m_DirPath{};
-		bool m_IsSelected = false;
 		bool m_FlaggedForRemoval = false;
 	public:
+		bool p_IsSelected = false;
 		MusicDirectoryState() {};
 		void SetDirPath(const std::wstring& dirPath);
-
-		void Notify() override;
+		void SetFlaggedForRemoval();
 	};
 
 	class GuiState {
 	private:
-		std::vector<std::shared_ptr<MusicDirectoryGuiState>> m_MusicDirectories;
+		std::vector<std::shared_ptr<MusicDirectoryState>> m_MusicDirectories;
 	public:
-		std::vector<std::shared_ptr<MusicDirectoryGuiState>> GetMusicDirectories();
+		std::vector<std::shared_ptr<MusicDirectoryState>> GetMusicDirectories();
+		void AddMusicDirectory(std::wstring dirPath);
 	};
 
 }

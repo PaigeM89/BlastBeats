@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\git\BlastBeats\Patterns;D:\git\BlastBeats\BlastBeats;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\git\BlastBeats\BlastBeats.Gui.Core;D:\git\BlastBeats\BlastBeats;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\git\BlastBeats\Patterns;D:\git\BlastBeats\BlastBeats;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\git\BlastBeats\BlastBeats.Gui.Core;D:\git\BlastBeats\BlastBeats;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -141,7 +141,6 @@
     <ClCompile Include="external\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="external\imgui\imgui_tables.cpp" />
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="GuiState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGui.cpp" />
     <ClCompile Include="MusicDirectoryGui.cpp" />
@@ -157,12 +156,14 @@
     <ClInclude Include="external\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
-    <ClInclude Include="GuiState.h" />
     <ClInclude Include="MainGui.h" />
     <ClInclude Include="MusicDirectoryGui.h" />
     <ClInclude Include="SongsTable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BlastBeats.Gui.Core\BlastBeats.Gui.Core.vcxproj">
+      <Project>{4223d2cf-689f-4a7f-aa89-aee8623988cd}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\BlastBeats\BlastBeats.vcxproj">
       <Project>{09dd948e-f8ba-413d-ba24-bc9c65cb8631}</Project>
     </ProjectReference>

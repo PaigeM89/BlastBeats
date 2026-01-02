@@ -75,11 +75,11 @@ void MusicDirectoryGui::Render(std::shared_ptr<GuiState::GuiState> guiState)
 	for (int i = 0; i < musicDirs.size(); i++)
 	{
         auto& x = musicDirs[i];
-        const auto& dirPath = WCharToUtf8(x->MusicDirectory->DirPath);
-        if (ImGui::Selectable(dirPath.c_str(), x->IsSelected))
-            x->IsSelected = !musicDirs[i]->IsSelected;
+        const auto& dirPath = std::string("hello world"); // WCharToUtf8(x->MusicDirectory->DirPath);
+        if (ImGui::Selectable(dirPath.c_str(), x->p_IsSelected))
+            x->p_IsSelected = !musicDirs[i]->p_IsSelected;
 
-        if (x->IsSelected)
+        if (x->p_IsSelected)
             selectedIndexes.push_back(i);
 	}
 
@@ -97,7 +97,7 @@ void MusicDirectoryGui::Render(std::shared_ptr<GuiState::GuiState> guiState)
         {
             for (auto i : selectedIndexes)
             {
-                musicDirs[i]->FlaggedForRemoval = true;
+                musicDirs[i]->SetFlaggedForRemoval();
             }
         }
     }

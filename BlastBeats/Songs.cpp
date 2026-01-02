@@ -7,9 +7,6 @@
 
 // https://github.com/taglib/taglib/blob/master/examples/tagreader.cpp
 
-// it took 60 seconds to load everything. Hmm.
-// actually deleting the fileref reduced that to 20 seconds! yay!
-
 namespace fs = std::filesystem;
 
 const size_t CHUNK_SIZE = 1000;
@@ -40,7 +37,7 @@ std::vector<std::vector<T>> chunkVector(const std::vector<T>& source, size_t chu
 	return result;
 }
 
-static std::vector<std::wstring> GetAllFilepaths(const std::filesystem::path& rootDirPath)
+std::vector<std::wstring> Songs::GetAllFilepaths(const std::filesystem::path& rootDirPath)
 {
 	std::vector<std::wstring> filepaths{};
 	for (auto& f : fs::directory_iterator(rootDirPath))
@@ -59,7 +56,7 @@ static std::vector<std::wstring> GetAllFilepaths(const std::filesystem::path& ro
 	return filepaths;
 }
 
-static std::shared_ptr<Songs::Song> ReadSong(const std::wstring& filepath)
+static std::shared_ptr<Songs::Song> ReadSong(const uuids::uuid musicDirId, const std::wstring& filepath)
 {
 	TagLib::FileRef fileref(filepath.c_str());
 	if (!fileref.isNull() && fileref.tag())
@@ -67,87 +64,27 @@ static std::shared_ptr<Songs::Song> ReadSong(const std::wstring& filepath)
 		auto title = fileref.tag()->title().toWString();
 		auto artist = fileref.tag()->artist().toWString();
 		auto genre = fileref.tag()->genre().toWString();
-		return std::make_shared<Songs::Song>(filepath, title, artist, genre);
+		return std::make_shared<Songs::Song>(musicDirId, filepath, title, artist, genre);
 	}
 	return std::make_shared<Songs::Song>();
 }
 
-static void LoadAllSongs(std::shared_ptr<Songs::SongList> songList, const std::vector<std::wstring>& songPaths)
+static void LoadAllSongs(const uuids::uuid musicDirId, std::shared_ptr<Songs::SongList> songList, const std::vector<std::wstring>& songPaths)
 {
 	std::vector<std::shared_ptr<Songs::Song>> songs(songPaths.size());
 	for (int i = 0; i < songPaths.size(); i++)
 	{
-		const auto& song = ReadSong(songPaths[i]);
+		const auto& song = ReadSong(musicDirId, songPaths[i]);
 		if (!song->IsEmpty())
 			songs[i] = song;
 	}
-	/*for (const auto& songPath : songPaths)
-	{
-		auto song = ReadSong(songPath);
-		if (!song->IsEmpty())
-			songs.push_back(song);
-	}*/
 	const auto& erased = std::erase_if(songs, [](auto& song) { return song->IsEmpty(); });
 	songList->AddRange(songs);
 }
 
-static void LoadAllSongsParallel(std::shared_ptr<Songs::SongList> songList, const std::vector<std::wstring> songPaths)
+uuids::uuid Songs::Song::GetMusicDirectoryId()
 {
-	std::vector<std::shared_ptr<Songs::Song>> songs(songPaths.size());
-	auto songPathChunks = chunkVector(songPaths, CHUNK_SIZE);
-	auto chunkedChunks = chunkVector(songPathChunks, NUMBER_OF_THREADS);
-	
-	// todo: this is not gonna be good
-	
-	// for each group of 5 chunks...
-	for (const auto& chunk : chunkedChunks)
-	{
-		std::array<std::thread, NUMBER_OF_THREADS> threads{};
-		// make a thread to load each chunk...
-		for (int i = 0; i < NUMBER_OF_THREADS; i++)
-		{
-			if (chunk.size() > i)
-				threads[i] = std::thread(LoadAllSongs, songList, chunk[i]);
-			else
-				threads[i] = std::thread();
-		}
-
-		// then wait for the threads to complete
-		for (auto& thread : threads)
-		{
-			if (thread.joinable()) {
-				thread.join();
-			}
-		}
-	}
-}
-
-std::vector<std::shared_ptr<Songs::Song>> Songs::LoadAllSongsInDirectory(const std::filesystem::path& dirPath)
-{
-	if (!fs::is_directory(dirPath))
-	{
-		std::vector<std::shared_ptr<Songs::Song>> songs{};
-		return songs;
-	}
-	
-	auto songPaths = GetAllFilepaths(dirPath);
-	auto sl = std::make_shared<Songs::SongList>(songPaths.size());
-	LoadAllSongsParallel(sl, songPaths);
-
-	return sl->GetSongs();
-}
-
-std::shared_ptr<Songs::SongList> Songs::LoadAllSongsInDirectory(const std::shared_ptr<MusicDirectories::MusicDirectory> musicDir)
-{
-	if (!fs::is_directory(musicDir->DirPath) || musicDir->FlaggedForRemoval)
-	{
-		return std::shared_ptr<Songs::SongList>();
-	}
-	
-	auto songPaths = GetAllFilepaths(musicDir->DirPath);
-	auto sl = std::make_shared<Songs::SongList>(songPaths.size());
-	LoadAllSongsParallel(sl, songPaths);
-	return sl;
+	return m_MusicDirId;
 }
 
 std::wstring Songs::Song::GetTitle()
@@ -172,16 +109,100 @@ bool Songs::Song::IsEmpty()
 
 void Songs::SongList::AddRange(const std::vector<std::shared_ptr<Song>>& songsToAdd)
 {
-	std::lock_guard<std::mutex> lock(Mutex);
-	Songs.insert(Songs.end(), songsToAdd.begin(), songsToAdd.end());
+	std::lock_guard<std::mutex> lock(m_Mutex);
+	m_Songs.insert(m_Songs.end(), songsToAdd.begin(), songsToAdd.end());
 }
 
 std::vector<std::shared_ptr<Songs::Song>> Songs::SongList::GetSongs()
 {
-	return Songs;
+	return m_Songs;
+}
+
+void Songs::SongList::AddLoadingDir(const uuids::uuid dirId)
+{
+	std::lock_guard<std::mutex> loadingDirsLock(m_LoadingDirsMutex);
+	m_LoadingDirIds.push_back(dirId);
+}
+
+void Songs::SongList::RemoveLoadingDir(const uuids::uuid dirId)
+{
+	std::lock_guard<std::mutex> loadingDirsLock(m_LoadingDirsMutex);
+	std::erase_if(this->m_LoadingDirIds, [&dirId](const uuids::uuid& id) {
+		return id == dirId;
+		});
+}
+
+void Songs::SongList::LoadSongs(const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths)
+{
+	std::vector<std::shared_ptr<Songs::Song>> songs(songPaths.size());
+	for (int i = 0; i < songPaths.size(); i++)
+	{
+		const auto& song = ReadSong(musicDirId, songPaths[i]);
+		if (!song->IsEmpty())
+			songs[i] = song;
+	}
+	const auto& erased = std::erase_if(songs, [](auto& song) { return song->IsEmpty(); });
+	this->AddRange(songs);
+}
+
+void Songs::SongList::LoadSongs(std::stop_token stopToken, const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths)
+{
+	this->AddLoadingDir(musicDirId);
+	std::vector<std::shared_ptr<Songs::Song>> songs(songPaths.size());
+	auto songPathChunks = chunkVector(songPaths, CHUNK_SIZE);
+	auto chunkedChunks = chunkVector(songPathChunks, NUMBER_OF_THREADS);
+
+	// todo: this is not gonna be good - maybe use futures here?
+
+	// for each group of 5 chunks...
+	for (const auto& chunk : chunkedChunks)
+	{
+		if (!stopToken.stop_requested())
+		{
+			std::array<std::thread, NUMBER_OF_THREADS> threads{};
+			// make a thread to load each chunk...
+			for (int i = 0; i < NUMBER_OF_THREADS; i++)
+			{
+				if (chunk.size() > i)
+					//threads[i] = std::thread([this](){LoadSongs, musicDirId, chunk[i]);
+				{
+					auto& thisChunk = chunk[i];
+					threads[i] = std::thread([this, &musicDirId, thisChunk]() { this->LoadSongs(musicDirId, thisChunk); });
+				}
+				else
+					threads[i] = std::thread();
+			}
+
+			// then wait for the threads to complete
+			for (auto& thread : threads)
+			{
+				if (thread.joinable()) {
+					thread.join();
+				}
+			}
+		}
+		if (stopToken.stop_requested())
+		{
+			printf("Stop requested on thread loading files\n");
+		}
+	}
+
+	this->RemoveLoadingDir(musicDirId);
+}
+
+void Songs::SongList::RemoveSongsWithDirectoryId(const uuids::uuid& musicDirId)
+{
+	std::erase_if(m_Songs, [&musicDirId](std::shared_ptr<Songs::Song>& song) {
+		return song->GetMusicDirectoryId() == musicDirId;
+		});
 }
 
 Songs::SongList::SongList(size_t reserveSize)
 {
-	Songs.reserve(reserveSize);
+	m_Songs.reserve(reserveSize);
+}
+
+bool Songs::SongList::IsLoadingSongs()
+{
+	return this->m_LoadingDirIds.size() > 0;
 }
