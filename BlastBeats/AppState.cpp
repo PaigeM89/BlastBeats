@@ -7,6 +7,7 @@ using namespace AppState;
 AppState::ApplicationState::ApplicationState()
 {
 	m_MusicDirectoryManager = std::make_shared<MusicDirectories::MusicDirectoryManager>();
+	m_Player = std::make_shared<MusicPlayer::Player>();
 }
 
 std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> ApplicationState::GetMusicDirectories()
@@ -23,6 +24,11 @@ void ApplicationState::AddMusicDirectory(const std::wstring& dirPath)
 void ApplicationState::RemoveDirectory(const std::wstring& directory)
 {
 	m_MusicDirectoryManager->RemoveDirectoryW(directory);
+}
+
+void AppState::ApplicationState::PlaySong(std::shared_ptr<Songs::Song> song)
+{
+	m_Player->PlaySong(song);
 }
 
 std::vector<std::shared_ptr<Songs::Song>> AppState::ApplicationState::GetSongs()

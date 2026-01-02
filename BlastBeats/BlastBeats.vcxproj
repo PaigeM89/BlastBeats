@@ -138,12 +138,14 @@
     <ClInclude Include="AppState.h" />
     <ClInclude Include="Messages.h" />
     <ClInclude Include="MusicDirectories.h" />
+    <ClInclude Include="MusicPlayer.h" />
     <ClInclude Include="Observers.h" />
     <ClInclude Include="Songs.h" />
     <ClInclude Include="Uuid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppState.cpp" />
+    <ClCompile Include="MusicPlayer.cpp" />
     <ClCompile Include="Songs.cpp" />
     <ClCompile Include="MusicDirectories.cpp" />
   </ItemGroup>

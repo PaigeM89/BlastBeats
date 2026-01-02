@@ -88,6 +88,16 @@ uuids::uuid Songs::Song::GetMusicDirectoryId()
 	return m_MusicDirId;
 }
 
+uuids::uuid Songs::Song::GetId() const
+{
+	return m_Id;
+}
+
+std::wstring Songs::Song::GetFilepath()
+{
+	return m_Filepath;
+}
+
 std::wstring Songs::Song::GetTitle()
 {
 	return m_Title;

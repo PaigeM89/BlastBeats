@@ -13,6 +13,7 @@ namespace Songs {
 	/// </summary>
 	class Song {
 	private:
+		uuids::uuid m_Id;
 		uuids::uuid m_MusicDirId;
 		std::wstring m_Filepath{};
 		std::wstring m_Title{};
@@ -20,13 +21,17 @@ namespace Songs {
 		std::wstring m_Artist{};
 		std::wstring m_Genre{};
 	public:
-		Song() {};
-		Song(uuids::uuid& musicDirId, std::wstring& filePath)
+		Song()
+		{
+			m_Id = uuids::uuid_system_generator{}();
+		};
+		Song(uuids::uuid& musicDirId, std::wstring& filePath) : Song()
 		{
 			m_MusicDirId = musicDirId;
 			m_Filepath = filePath;
 		}
-		Song(uuids::uuid musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) {
+		Song(uuids::uuid musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) : Song() 
+		{
 			m_MusicDirId = musicDirId;
 			m_Filepath = filepath;
 			m_Title = title;
@@ -36,6 +41,8 @@ namespace Songs {
 		}
 
 		uuids::uuid GetMusicDirectoryId();
+		uuids::uuid GetId() const;
+		std::wstring GetFilepath();
 		std::wstring GetTitle();
 		std::wstring GetAlbum();
 		std::wstring GetArtist();

@@ -45,12 +45,13 @@ void SongsTable::Render(std::shared_ptr<AppState::ApplicationState> state)
 
 	static ImGuiTableColumnFlags column_flags = ImGuiTableColumnFlags_None;
 
-	if (ImGui::BeginTable("SongList", 4, tableFlags, ImVec2(0, 0)))
+	if (ImGui::BeginTable("SongList", 5, tableFlags, ImVec2(0, 0)))
 	{
 		ImGui::TableSetupColumn("Title", column_flags);
 		ImGui::TableSetupColumn("Album", column_flags);
 		ImGui::TableSetupColumn("Artist", column_flags);
 		ImGui::TableSetupColumn("Genre", column_flags);
+		ImGui::TableSetupColumn("Play", ImGuiTableColumnFlags_NoHeaderLabel);
 		ImGui::TableSetupScrollFreeze(0, 1);
 		ImGui::TableHeadersRow();
 
@@ -65,10 +66,10 @@ void SongsTable::Render(std::shared_ptr<AppState::ApplicationState> state)
 			// this has to be a value in a column for the row selection to work.
 			if (ImGui::Selectable(Helpers::WCharToUtf8(song->GetTitle()).c_str(), isSelected, selectable_flags, ImVec2(0, 0)))
 			{
-				wprintf(L"Toggling selection on song %s to %b", song->GetTitle(), !isSelected);
+				const auto& title = song->GetTitle();
+				wprintf(L"Toggling selection on song %s\n", title.c_str());
 				song->p_IsSelected = !isSelected;
 			}
-
 			
 			//ImGui::Text(Helpers::WCharToUtf8(song->GetTitle()).c_str());
 			ImGui::TableSetColumnIndex(1);
@@ -77,6 +78,11 @@ void SongsTable::Render(std::shared_ptr<AppState::ApplicationState> state)
 			ImGui::Text(Helpers::WCharToUtf8(song->GetArtist()).c_str());
 			ImGui::TableSetColumnIndex(3);
 			ImGui::Text(Helpers::WCharToUtf8(song->GetGenre()).c_str());
+			ImGui::TableSetColumnIndex(4);
+			if (ImGui::Button("Play"))
+			{
+				state->PlaySong(song);
+			}
 
 			ImGui::PopID();
 		}
