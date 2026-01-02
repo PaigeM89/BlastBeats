@@ -21,6 +21,11 @@ namespace Songs {
 		std::wstring m_Genre{};
 	public:
 		Song() {};
+		Song(uuids::uuid& musicDirId, std::wstring& filePath)
+		{
+			m_MusicDirId = musicDirId;
+			m_Filepath = filePath;
+		}
 		Song(uuids::uuid musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) {
 			m_MusicDirId = musicDirId;
 			m_Filepath = filepath;
@@ -36,6 +41,10 @@ namespace Songs {
 		std::wstring GetArtist();
 		std::wstring GetGenre();
 
+		/// <summary>
+		/// Used to determine if a file, for whatever reason, had no tag data and somehow constructed an "empty" song.
+		/// </summary>
+		/// <returns>TRUE if the song has no usable data, FALSE if the song data is usable.</returns>
 		bool IsEmpty();
 
 		/// <summary>
