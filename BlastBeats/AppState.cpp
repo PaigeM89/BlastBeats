@@ -18,7 +18,6 @@ std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> ApplicationState:
 void ApplicationState::AddMusicDirectory(const std::wstring& dirPath)
 {
 	m_MusicDirectoryManager->AddDirectory(dirPath);
-	//m_MusicDirectories.emplace_back(MusicDirectories::CreateMusicDirectory(dirPath));
 }
 
 void ApplicationState::RemoveDirectory(const std::wstring& directory)

@@ -11,7 +11,7 @@ namespace AppState
 	class ApplicationState {
 	private:
 		std::shared_ptr<MusicDirectories::MusicDirectoryManager> m_MusicDirectoryManager;
-		std::shared_ptr<MusicPlayer::Player> m_Player;
+		std::shared_ptr<MusicPlayer::Player> m_Player; // should this be a unique pointer?
 	public:
 		ApplicationState();
 		std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> GetMusicDirectories();
