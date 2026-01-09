@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
-project(CMakeSFMLProject LANGUAGES CXX)
+project(BlastBeats LANGUAGES CXX
+    VERSION 0.1.0
+)
+
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -12,6 +16,19 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp)
-target_compile_features(main PRIVATE cxx_std_20)
-target_link_libraries(main PRIVATE SFML::Graphics)
+add_library(Uuids INTERFACE)
+
+target_include_directories(Uuids INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/uuids>
+)
+
+add_subdirectory(BlastBeats.Core)
+target_link_libraries(BlastBeats.Core PRIVATE SFML::Audio)
+
+# TODO: there has to be a better way to do this than an absolute path
+include(D:/git/vcpkg/scripts/buildsystems/vcpkg.cmake)
+
+find_package(ZLIB REQUIRED)
+
+target_link_libraries(BlastBeats.Core PRIVATE ZLIB::ZLIB)
+
