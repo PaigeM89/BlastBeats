@@ -1,0 +1,18 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name":"debug",
+            "displayName": "Debug Build",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "VCPKG_MANIFEST_MODE": "ON",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "ENABLE_STATIC_RUNTIME": "ON",
+                "utf8cpp_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/utfcpp_x64-windows/include",
+                "ZLIB_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/zlib_x64-windows/include"
+            }
+        }
+    ]
+}
