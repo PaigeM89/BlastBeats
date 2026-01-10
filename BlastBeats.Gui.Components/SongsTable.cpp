@@ -71,7 +71,6 @@ void SongsTable::Render(std::shared_ptr<AppState::ApplicationState> state, std::
 				song->p_IsSelected = !isSelected;
 			}
 			
-			//ImGui::Text(callbacks->WCharToUtf8(song->GetTitle()).c_str());
 			ImGui::TableSetColumnIndex(1);
 			ImGui::Text(callbacks->WCharToUtf8(song->GetAlbum()).c_str());
 			ImGui::TableSetColumnIndex(2);

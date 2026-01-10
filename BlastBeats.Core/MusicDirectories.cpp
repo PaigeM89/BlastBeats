@@ -101,7 +101,7 @@ void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const std::wstring
 	}
 }
 
-void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const uuids::uuid musicDirId)
+void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const uuids::uuid& musicDirId)
 {
 	this->RemoveSongsInDirectory(musicDirId);
 	std::erase_if(m_MusicDirectories, [&musicDirId](const std::shared_ptr<MusicDirectories::MusicDirectory> musicDir) {
@@ -109,33 +109,33 @@ void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const uuids::uuid 
 		});
 }
 
-void MusicDirectories::MusicDirectoryManager::Update(std::shared_ptr<Messages::MusicDirectoryChanged> msg)
-{
-	if (msg->FlaggedForRemoval)
-	{
-		for (auto& mdir : m_MusicDirectories)
-		{
-			if (mdir->m_Id == msg->Id)
-			{
-				mdir->m_FlaggedForRemoval = true;
-				return;
-			}
-		}
-	}
-	else
-	{
-		for (auto& mdir : m_MusicDirectories)
-		{
-			if (mdir->m_Id == msg->Id)
-			{
-				mdir->m_DirPath = msg->DirPath;
-				// todo: reload new directory, clean old songs as needed
-				return;
-			}
-		}
-		this->AddDirectory(msg->DirPath);
-	}
-}
+//void MusicDirectories::MusicDirectoryManager::Update(std::shared_ptr<Messages::MusicDirectoryChanged> msg)
+//{
+//	if (msg->FlaggedForRemoval)
+//	{
+//		for (auto& mdir : m_MusicDirectories)
+//		{
+//			if (mdir->m_Id == msg->Id)
+//			{
+//				mdir->m_FlaggedForRemoval = true;
+//				return;
+//			}
+//		}
+//	}
+//	else
+//	{
+//		for (auto& mdir : m_MusicDirectories)
+//		{
+//			if (mdir->m_Id == msg->Id)
+//			{
+//				mdir->m_DirPath = msg->DirPath;
+//				// todo: reload new directory, clean old songs as needed
+//				return;
+//			}
+//		}
+//		this->AddDirectory(msg->DirPath);
+//	}
+//}
 
 bool MusicDirectories::MusicDirectoryManager::IsLoadingSongs()
 {

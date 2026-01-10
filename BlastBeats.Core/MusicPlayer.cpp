@@ -8,12 +8,12 @@ void MusicPlayer::Player::StartCurrentSong()
 
 	wprintf(L"Playing file: %s\n", m_CurrentSong->GetFilepath().c_str());
 	
-	if (!music.openFromFile(path))
+	if (!m_Music->openFromFile(path))
 	{
 		wprintf(L"Error playing file: %s\n", m_CurrentSong->GetFilepath().c_str());
 		return;
 	}
-	music.play();
+	m_Music->play();
 }
 
 void MusicPlayer::Player::SetAndPlaySong(std::shared_ptr<Songs::Song> song)
@@ -31,10 +31,20 @@ void MusicPlayer::Player::Play()
 
 void MusicPlayer::Player::Stop()
 {
-	music.pause();
+	m_Music->pause();
 }
 
 std::shared_ptr<Songs::Song> MusicPlayer::Player::GetCurrentSong()
 {
 	return m_CurrentSong;
+}
+
+MusicPlayer::Player::Player()
+{
+	m_Music = std::make_unique<sf::Music>();
+}
+
+MusicPlayer::Player::~Player()
+{
+	m_Music.release();
 }

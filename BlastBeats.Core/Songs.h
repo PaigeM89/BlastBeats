@@ -4,8 +4,12 @@
 #include <memory>
 #include <filesystem>
 #include <mutex>
-#include <taglib/fileref.h>
+// #include <taglib/fileref.h>
 #include "Uuid.h"
+
+namespace TagLib {
+	class FileRef;
+}
 
 namespace Songs {
 

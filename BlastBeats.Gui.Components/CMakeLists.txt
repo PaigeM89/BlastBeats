@@ -16,11 +16,14 @@ target_sources(BlastBeats.Gui.Components
 )
 
 target_link_libraries(BlastBeats.Gui.Components
-    PRIVATE
+    PUBLIC
         BlastBeats.Core
 )
 
 target_include_directories(BlastBeats.Gui.Components
     PUBLIC
         ../imgui
+        ../imgui/misc/cpp
 )
+
+target_compile_features(BlastBeats.Gui.Components PRIVATE cxx_std_20)

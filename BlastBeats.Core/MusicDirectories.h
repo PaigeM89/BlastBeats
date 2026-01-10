@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 #include <mutex>
-#include "Observers.h"
+// #include "Observers.h"
 #include "Messages.h"
 #include "Songs.h"
 #include <future>
@@ -103,7 +103,7 @@ namespace MusicDirectories {
 	/// <summary>
 	/// Manages the directories used to load music, as well as the master list of song data.
 	/// </summary>
-	class MusicDirectoryManager : public Observers::MusicDirectoryObserver
+	class MusicDirectoryManager // : public Observers::MusicDirectoryObserver
 	{
 	private:
 		std::vector<SongLoadingThreadManager> m_SongLoadingThreads{};
@@ -118,8 +118,8 @@ namespace MusicDirectories {
 		MusicDirectoryManager();
 		void AddDirectory(const std::wstring& dirPath);
 		void RemoveDirectory(const std::wstring& directory);
-		void RemoveDirectory(const uuids::uuid musicDirId);
-		void Update(std::shared_ptr<Messages::MusicDirectoryChanged> msg) override;
+		void RemoveDirectory(const uuids::uuid& musicDirId);
+		// void Update(std::shared_ptr<Messages::MusicDirectoryChanged> msg) override;
 
 		bool IsLoadingSongs();
 		void CheckForCompletedThreads();
