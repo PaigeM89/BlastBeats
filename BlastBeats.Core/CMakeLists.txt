@@ -8,14 +8,16 @@ target_sources(BlastBeats.Core
         Songs.cpp
 
     PUBLIC
-        AppState.h
-        Messages.h
-        MusicDirectories.h
-        MusicPlayer.h
-        Songs.h
+        FILE_SET HEADERS
+        FILES
+            AppState.h
+            Messages.h
+            MusicDirectories.h
+            MusicPlayer.h
+            Songs.h
 )
 
 target_link_libraries(BlastBeats.Core
-    PRIVATE
+    PUBLIC
         Uuids
 )

@@ -23,12 +23,17 @@ target_include_directories(Uuids INTERFACE
 )
 
 add_subdirectory(BlastBeats.Core)
-target_link_libraries(BlastBeats.Core PRIVATE SFML::Audio)
+
+# why does this have to be public? that seems wrong. this library isn't needed outside of blastbeats
+target_link_libraries(BlastBeats.Core PUBLIC SFML::Audio)
 
 # TODO: there has to be a better way to do this than an absolute path
 include(D:/git/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
 find_package(ZLIB REQUIRED)
+# this is an older version :( not sure what the best fix is here
+find_package(TagLib 2.0.2 REQUIRED)
 
-target_link_libraries(BlastBeats.Core PRIVATE ZLIB::ZLIB)
+target_link_libraries(BlastBeats.Core PUBLIC ZLIB::ZLIB TagLib)
 
+add_subdirectory(BlastBeats.Gui.Components)
