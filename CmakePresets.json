@@ -11,7 +11,8 @@
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "ENABLE_STATIC_RUNTIME": "ON",
                 "utf8cpp_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/utfcpp_x64-windows/include",
-                "ZLIB_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/zlib_x64-windows/include"
+                "ZLIB_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/zlib_x64-windows/include",
+                "SDL3_DIR": "$env{VCPKG_ROOT}/packages/sdl3_x64-windows/share/sdl3"
             }
         }
     ]
