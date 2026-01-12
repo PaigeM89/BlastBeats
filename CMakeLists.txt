@@ -13,6 +13,18 @@ target_include_directories(Uuids INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/uuids>
 )
 
+# find_library(TagLib NAMES taglib tag HINTS external/taglib/taglib/Release)
+
+# if(TagLib)
+#     message(STATUS "Found TagLib library!")
+# else()
+#     message(FATAL_ERROR "Failed to find TagLib library!")
+# endif()
+
+# add_library(TagLib STATIC IMPORTED)
+# set_property(TARGET TagLib PROPERTY IMPORTED_LOCATION /external/taglib)
+
+add_subdirectory(taglib)
 add_subdirectory(BlastBeats.Core)
 add_subdirectory(BlastBeats.Gui.Components)
 add_subdirectory(BlastBeats.Windows)

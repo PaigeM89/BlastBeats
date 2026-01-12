@@ -5,6 +5,7 @@
 
 build
 CMakeUserPresets.json
+external/taglib
 
 
 # User-specific files

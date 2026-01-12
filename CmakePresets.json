@@ -10,9 +10,12 @@
                 "VCPKG_MANIFEST_MODE": "ON",
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "ENABLE_STATIC_RUNTIME": "ON",
-                "utf8cpp_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/utfcpp_x64-windows/include",
+                "utf8cpp_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/utfcpp_x64-windows/include/utf8cpp",
                 "ZLIB_INCLUDE_DIR": "$env{VCPKG_ROOT}/packages/zlib_x64-windows/include",
-                "SDL3_DIR": "$env{VCPKG_ROOT}/packages/sdl3_x64-windows/share/sdl3"
+                "SDL3_DIR": "$env{VCPKG_ROOT}/packages/sdl3_x64-windows/share/sdl3",
+                "BUILD_SHARED_LIBS": "OFF",
+                "BUILD_TESTING":"OFF",
+                "BUILD_EXAMPLES": "OFF"
             }
         }
     ]

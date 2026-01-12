@@ -4,12 +4,11 @@
 #include <memory>
 #include <filesystem>
 #include <mutex>
-// #include <taglib/fileref.h>
 #include "Uuid.h"
 
-namespace TagLib {
-	class FileRef;
-}
+//namespace TagLib {
+//	class FileRef;
+//}
 
 namespace Songs {
 
@@ -26,16 +25,17 @@ namespace Songs {
 		std::wstring m_Artist{};
 		std::wstring m_Genre{};
 		int m_PlayTimeInSeconds = 0;
+		//Song(const uuids::uuid& musicDirId, const std::wstring& filepath, const TagLib::FileRef& fileref);
 	public:
 		Song()
 		{
 			m_Id = uuids::uuid_system_generator{}();
 		};
-		Song(const uuids::uuid& musicDirId, const std::wstring& filePath) : Song()
-		{
+		Song(const uuids::uuid& musicDirId, const std::wstring& filePath);
+		/*{
 			m_MusicDirId = musicDirId;
 			m_Filepath = filePath;
-		}
+		}*/
 		Song(uuids::uuid& musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) : Song() 
 		{
 			m_MusicDirId = musicDirId;
@@ -45,7 +45,8 @@ namespace Songs {
 			m_Artist = artist;
 			m_Genre = genre;
 		}
-		Song(const uuids::uuid& musicDirId, const std::wstring& filepath, TagLib::FileRef& fileref);
+		/*Song(const uuids::uuid& musicDirId, const std::wstring& filepath, const std::shared_ptr<TagLib::FileRef> fileref);*/
+		
 
 		uuids::uuid GetMusicDirectoryId();
 		uuids::uuid GetId() const;
