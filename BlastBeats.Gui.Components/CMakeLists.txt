@@ -5,6 +5,7 @@ target_sources(BlastBeats.Gui.Components
         MusicDirectoryGui.cpp
         MusicPlayerGui.cpp
         SongsTable.cpp
+        SongQueueGui.cpp
 
     PUBLIC
         FILE_SET HEADERS
@@ -13,6 +14,7 @@ target_sources(BlastBeats.Gui.Components
             MusicPlayerGui.h
             SongsTable.h
             Helpers.h
+            SongQueueGui.h
 )
 
 target_link_libraries(BlastBeats.Gui.Components

@@ -10,6 +10,7 @@
 #include <AppState.h>
 #include <SongsTable.h>
 #include <MusicPlayerGui.h>
+#include <SongQueueGui.h>
 
 void MainGui::Render(std::shared_ptr<AppState::ApplicationState> appState, std::shared_ptr<Helpers::Callbacks> callbacks)
 {
@@ -101,6 +102,7 @@ void MainGui::Render(std::shared_ptr<AppState::ApplicationState> appState, std::
 		MusicDirectoryGui::Render(appState, callbacks);
 		SongsTable::Render(appState, callbacks);
 		MusicPlayerGui::Render(appState, callbacks);
+		SongQueueGui::Render(appState, callbacks);
 		//ImGui::ShowDemoWindow(); // Show demo window! :)
 
 		// render the actual UI here

@@ -6,10 +6,6 @@
 #include <mutex>
 #include "Uuid.h"
 
-//namespace TagLib {
-//	class FileRef;
-//}
-
 namespace Songs {
 
 	/// <summary>
@@ -19,23 +15,22 @@ namespace Songs {
 	private:
 		uuids::uuid m_Id;
 		uuids::uuid m_MusicDirId;
+		/// <summary>
+		/// The number of the song in the album it is on. 1-based.
+		/// </summary>
+		int m_SongNumber = 0;
 		std::wstring m_Filepath{};
 		std::wstring m_Title{};
 		std::wstring m_Album{};
 		std::wstring m_Artist{};
 		std::wstring m_Genre{};
 		int m_PlayTimeInSeconds = 0;
-		//Song(const uuids::uuid& musicDirId, const std::wstring& filepath, const TagLib::FileRef& fileref);
 	public:
 		Song()
 		{
 			m_Id = uuids::uuid_system_generator{}();
 		};
 		Song(const uuids::uuid& musicDirId, const std::wstring& filePath);
-		/*{
-			m_MusicDirId = musicDirId;
-			m_Filepath = filePath;
-		}*/
 		Song(uuids::uuid& musicDirId, std::wstring filepath, std::wstring title, std::wstring album, std::wstring artist, std::wstring genre) : Song() 
 		{
 			m_MusicDirId = musicDirId;
@@ -45,12 +40,12 @@ namespace Songs {
 			m_Artist = artist;
 			m_Genre = genre;
 		}
-		/*Song(const uuids::uuid& musicDirId, const std::wstring& filepath, const std::shared_ptr<TagLib::FileRef> fileref);*/
-		
+
 
 		uuids::uuid GetMusicDirectoryId();
 		uuids::uuid GetId() const;
 		std::wstring GetFilepath();
+		std::optional<int> GetSongNumber();
 		std::wstring GetTitle();
 		std::wstring GetAlbum();
 		std::wstring GetArtist();
@@ -79,8 +74,8 @@ namespace Songs {
 		mutable std::mutex m_LoadingDirsMutex;
 		std::vector<uuids::uuid> m_LoadingDirIds{};
 
-		void AddLoadingDir(const uuids::uuid dirId);
-		void RemoveLoadingDir(const uuids::uuid dirId);
+		void AddLoadingDir(const uuids::uuid& dirId);
+		void RemoveLoadingDir(const uuids::uuid& dirId);
 		void LoadSongs(const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths);
 	public:
 		SongManager(size_t reserveSize);

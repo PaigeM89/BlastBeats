@@ -82,6 +82,10 @@ Songs::Song::Song(const uuids::uuid& musicDirId, const std::wstring& filePath)
 	TagLib::FileRef fileref(filePath.c_str());
 	if (!fileref.isNull() && fileref.tag())
 	{
+		int track = fileref.tag()->track();
+		if (track > 0)
+			m_SongNumber = track;
+
 		m_Title = fileref.tag()->title().toWString();
 		m_Album = fileref.tag()->album().toWString();
 		m_Artist = fileref.tag()->artist().toWString();
@@ -104,6 +108,13 @@ uuids::uuid Songs::Song::GetId() const
 std::wstring Songs::Song::GetFilepath()
 {
 	return m_Filepath;
+}
+
+std::optional<int> Songs::Song::GetSongNumber()
+{
+	if (m_SongNumber > 0)
+		return m_SongNumber;
+	return {};
 }
 
 std::wstring Songs::Song::GetTitle()
@@ -142,13 +153,13 @@ std::vector<std::shared_ptr<Songs::Song>> Songs::SongManager::GetSongs()
 	return m_Songs;
 }
 
-void Songs::SongManager::AddLoadingDir(const uuids::uuid dirId)
+void Songs::SongManager::AddLoadingDir(const uuids::uuid& dirId)
 {
 	std::lock_guard<std::mutex> loadingDirsLock(m_LoadingDirsMutex);
 	m_LoadingDirIds.push_back(dirId);
 }
 
-void Songs::SongManager::RemoveLoadingDir(const uuids::uuid dirId)
+void Songs::SongManager::RemoveLoadingDir(const uuids::uuid& dirId)
 {
 	std::lock_guard<std::mutex> loadingDirsLock(m_LoadingDirsMutex);
 	std::erase_if(this->m_LoadingDirIds, [&dirId](const uuids::uuid& id) {

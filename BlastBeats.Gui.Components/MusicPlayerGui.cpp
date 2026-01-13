@@ -21,6 +21,21 @@ void MusicPlayerGui::Render(std::shared_ptr<AppState::ApplicationState> state, s
 		}
 		ImGui::End();
 	}
+	else if (state->FirstSongInQueue().has_value())
+	{
+		const auto song = state->FirstSongInQueue().value();
+		ImGui::Begin("Next Song");
+
+		ImGui::LabelText("Song", callbacks->WCharToUtf8(song->GetTitle()).c_str());
+		ImGui::LabelText("Artist", callbacks->WCharToUtf8(song->GetArtist()).c_str());
+		ImGui::LabelText("Album", callbacks->WCharToUtf8(song->GetAlbum()).c_str());
+
+		if (ImGui::Button("Play"))
+		{
+			state->PlaySong(song);
+		}
+		ImGui::End();
+	}
 	else
 	{
 		ImGui::Begin("Now Playing");

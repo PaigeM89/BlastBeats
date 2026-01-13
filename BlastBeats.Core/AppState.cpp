@@ -8,6 +8,7 @@ AppState::ApplicationState::ApplicationState()
 {
 	m_MusicDirectoryManager = std::make_shared<MusicDirectories::MusicDirectoryManager>();
 	m_Player = std::make_shared<MusicPlayer::Player>();
+	m_Queue = std::make_unique<SongQueue::Queue>();
 }
 
 std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> ApplicationState::GetMusicDirectories()
@@ -45,7 +46,44 @@ std::shared_ptr<Songs::Song> AppState::ApplicationState::GetCurrentSong()
 	return m_Player->GetCurrentSong();
 }
 
+std::optional<std::shared_ptr<Songs::Song>> AppState::ApplicationState::NextSongInQueue()
+{
+	return m_Queue->GetNextSong();
+}
+
+std::optional<std::shared_ptr<Songs::Song>> AppState::ApplicationState::FirstSongInQueue()
+{
+	return m_Queue->GetFirstSong();
+}
+
+AppState::ApplicationState::~ApplicationState()
+{
+	m_Queue.release();
+}
+
 std::vector<std::shared_ptr<Songs::Song>> AppState::ApplicationState::GetSongs()
 {
 	return m_MusicDirectoryManager->GetSongs();
+}
+
+std::vector<std::shared_ptr<Songs::Song>> AppState::ApplicationState::GetQueuedSongs()
+{
+	return m_Queue->GetQueue();
+}
+
+std::vector<std::shared_ptr<Songs::Song>> AppState::ApplicationState::GetSelectedSongs()
+{
+	const auto& songs = m_MusicDirectoryManager->GetSongs();
+	std::vector<std::shared_ptr<Songs::Song>> selectedSongs{};
+	for (const auto& song : songs)
+	{
+		if (song->p_IsSelected)
+			selectedSongs.push_back(song);
+	}
+	return selectedSongs;
+}
+
+void AppState::ApplicationState::AddSongsToEndOfQueue(const std::vector<std::shared_ptr<Songs::Song>>& songs)
+{
+	m_Queue->AddSongsToEnd(songs);
 }

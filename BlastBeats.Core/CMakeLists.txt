@@ -6,15 +6,16 @@ target_sources(BlastBeats.Core
         MusicDirectories.cpp
         MusicPlayer.cpp
         Songs.cpp
+        SongQueue.cpp
 
     PUBLIC
         FILE_SET HEADERS
         FILES
             AppState.h
-            # Messages.h
             MusicDirectories.h
             MusicPlayer.h
             Songs.h
+            SongQueue.h
 )
 
 include(FetchContent)

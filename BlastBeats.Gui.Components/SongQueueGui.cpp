@@ -1,62 +1,30 @@
 #pragma once
-#include "imgui.h"
-#include "SongsTable.h"
-#include <Songs.h>
-#include <AppState.h>
-#include <Helpers.h>
-
-static void RenderBasic(std::shared_ptr<AppState::ApplicationState> state, std::shared_ptr<Helpers::Callbacks> callbacks)
-{
-	if (ImGui::BeginTable("songsTable", 4))
-	{
-		ImGui::TableNextColumn();
-		ImGui::Text("Title");
-		ImGui::TableNextColumn();
-		ImGui::Text("Album");
-		ImGui::TableNextColumn();
-		ImGui::Text("Artist");
-		ImGui::TableNextColumn();
-		ImGui::Text("Genre");
-		for (const auto& song : state->GetSongs())
-		{
-			ImGui::TableNextColumn();
-			ImGui::Text(callbacks->WCharToUtf8(song->GetTitle()).c_str());
-			ImGui::TableNextColumn();
-			ImGui::Text(callbacks->WCharToUtf8(song->GetAlbum()).c_str());
-			ImGui::TableNextColumn();
-			ImGui::Text(callbacks->WCharToUtf8(song->GetArtist()).c_str());
-			ImGui::TableNextColumn();
-			ImGui::Text(callbacks->WCharToUtf8(song->GetGenre()).c_str());
-		}
-		ImGui::EndTable();
-	}
-}
+#include "SongQueueGui.h"
+#include <imgui.h>
 
 
-void SongsTable::Render(std::shared_ptr<AppState::ApplicationState> state, std::shared_ptr<Helpers::Callbacks> callbacks)
+void SongQueueGui::Render(std::shared_ptr<AppState::ApplicationState> state, std::shared_ptr<Helpers::Callbacks> callbacks)
 {
 	static ImGuiTableFlags tableFlags =
 		ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable
-		| ImGuiTableFlags_Sortable | ImGuiTableFlags_HighlightHoveredColumn
-		| ImGuiTableFlags_RowBg;
+		| ImGuiTableFlags_HighlightHoveredColumn | ImGuiTableFlags_RowBg;
 
 	static ImGuiSelectableFlags selectable_flags =
 		ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap;
 
 	static ImGuiTableColumnFlags column_flags = ImGuiTableColumnFlags_None;
-	ImGui::Begin("All Songs");
-	if (ImGui::BeginTable("SongList", 6, tableFlags, ImVec2(0, 0)))
+	ImGui::Begin("Queued songs");
+	if (ImGui::BeginTable("Song Queue", 5, tableFlags, ImVec2(0, 0)))
 	{
 		ImGui::TableSetupColumn("##SongNumber", column_flags);
 		ImGui::TableSetupColumn("Title", column_flags);
 		ImGui::TableSetupColumn("Album", column_flags);
 		ImGui::TableSetupColumn("Artist", column_flags);
 		ImGui::TableSetupColumn("Genre", column_flags);
-		ImGui::TableSetupColumn("Play", ImGuiTableColumnFlags_NoHeaderLabel);
 		ImGui::TableSetupScrollFreeze(0, 1);
 		ImGui::TableHeadersRow();
 
-		for (const auto& song : state->GetSongs())
+		for (const auto& song : state->GetQueuedSongs())
 		{
 			ImGui::PushID(callbacks->WCharToUtf8(song->GetTitle()).c_str());
 			const bool isSelected = song->p_IsSelected;
@@ -80,33 +48,18 @@ void SongsTable::Render(std::shared_ptr<AppState::ApplicationState> state, std::
 				wprintf(L"Toggling selection on song %s\n", title.c_str());
 				song->p_IsSelected = !isSelected;
 			}
-			
+
 			ImGui::TableSetColumnIndex(2);
 			ImGui::Text(callbacks->WCharToUtf8(song->GetAlbum()).c_str());
 			ImGui::TableSetColumnIndex(3);
 			ImGui::Text(callbacks->WCharToUtf8(song->GetArtist()).c_str());
 			ImGui::TableSetColumnIndex(4);
 			ImGui::Text(callbacks->WCharToUtf8(song->GetGenre()).c_str());
-			ImGui::TableSetColumnIndex(5);
-			if (ImGui::Button("Play"))
-			{
-				state->PlaySong(song);
-			}
 
 			ImGui::PopID();
 		}
 
 		ImGui::EndTable();
-		const auto& selectedSongs = state->GetSelectedSongs();
-		if (selectedSongs.size() > 0)
-		{
-			if (ImGui::Button("Add to end of queue"))
-			{
-				state->AddSongsToEndOfQueue(selectedSongs);
-			}
-		}
 		ImGui::End();
 	}
 }
-
-
