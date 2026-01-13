@@ -30,11 +30,6 @@ target_compile_features(BlastBeats.Core PRIVATE cxx_std_20)
 
 find_package(ZLIB REQUIRED)
 
-# this is an older version - might have to use a submodule after all
-# find_package(taglib CONFIG REQUIRED)
-# list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/taglib")
-# find_package(TagLib REQUIRED)
-
 include_directories(
     ${CMAKE_SOURCE_DIR}/external/taglib/include
 )
@@ -57,20 +52,9 @@ target_link_libraries(BlastBeats.Core
         Uuids
 
     PRIVATE
-        # ${CMAKE_SOURCE_DIR}/external/taglib/Release/tag.lib
-        # taglib dependency, not sure this is needed
+        # taglib dependency
         ZLIB::ZLIB
-
-        # i dunno man, just try shit, maybe something will work
-        # tag
-        # taglibdfdfdfdfd (this fails silently lol)
         TagLib
-
-        # these are what the taglib docs say to link
-        # taglib::tag
-        # TagLib::tag_c
-        # TagLib::TagLib
-
         SFML::Audio
 )
 

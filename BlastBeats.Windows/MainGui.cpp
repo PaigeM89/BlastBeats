@@ -8,6 +8,8 @@
 #include <SDL3/SDL.h>
 #include <MusicDirectoryGui.h>
 #include <AppState.h>
+#include <SongsTable.h>
+#include <MusicPlayerGui.h>
 
 void MainGui::Render(std::shared_ptr<AppState::ApplicationState> appState, std::shared_ptr<Helpers::Callbacks> callbacks)
 {
@@ -97,6 +99,8 @@ void MainGui::Render(std::shared_ptr<AppState::ApplicationState> appState, std::
 		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
 		MusicDirectoryGui::Render(appState, callbacks);
+		SongsTable::Render(appState, callbacks);
+		MusicPlayerGui::Render(appState, callbacks);
 		//ImGui::ShowDemoWindow(); // Show demo window! :)
 
 		// render the actual UI here

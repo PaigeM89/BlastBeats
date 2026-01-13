@@ -14,6 +14,11 @@ void MusicPlayerGui::Render(std::shared_ptr<AppState::ApplicationState> state, s
 		ImGui::LabelText("Artist", callbacks->WCharToUtf8(currentSong->GetArtist()).c_str());
 		ImGui::LabelText("Album", callbacks->WCharToUtf8(currentSong->GetAlbum()).c_str());
 
+		if (state->IsSongPlaying())
+		{
+			if (ImGui::Button("Pause"))
+				state->PauseCurrentSong();
+		}
 		ImGui::End();
 	}
 	else

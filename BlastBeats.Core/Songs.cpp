@@ -2,13 +2,6 @@
 #include <SFML/Audio.hpp>
 #include <filesystem>
 #include <taglib/fileref.h>
-// #include <fileref.h>
-// #include <fileref.h>
-// #include <tag/fileref.h>
-// #include <fileref.h>
-// #include "fileref.h"
-// #include "fileref.h"
-
 #include <iostream>
 #include <thread>
 
@@ -65,21 +58,8 @@ std::vector<std::wstring> Songs::GetAllFilepaths(const std::filesystem::path& ro
 
 static std::shared_ptr<Songs::Song> ReadSong(const uuids::uuid musicDirId, const std::wstring& filepath)
 {
-	//TagLib::FileRef fileref(filepath.c_str());
-	//std::shared_ptr<TagLib::FileRef> fileref = std::make_shared<TagLib::FileRef>(filepath.c_str());
-	/*if (!fileref.isNull() && fileref.tag())
-	{*/
 	const auto& song = std::make_shared<Songs::Song>(musicDirId, filepath);
-		//fileref.~FileRef(); // do i need to do this? will it auto-delete when it goes out of scope?
 	return song;
-		//auto title = fileref.tag()->title().toWString();
-		//auto album = fileref.tag()->album().toWString();
-		//auto artist = fileref.tag()->artist().toWString();
-		//auto genre = fileref.tag()->genre().toWString();
-		//return std::make_shared<Songs::Song>(musicDirId, filepath, title, album, artist, genre);
-	//}
-	//fileref.~FileRef();
-	//return std::make_shared<Songs::Song>();
 }
 
 static void LoadAllSongs(const uuids::uuid musicDirId, std::shared_ptr<Songs::SongManager> songList, const std::vector<std::wstring>& songPaths)
@@ -95,64 +75,21 @@ static void LoadAllSongs(const uuids::uuid musicDirId, std::shared_ptr<Songs::So
 	songList->AddRange(songs);
 }
 
-//Songs::Song::Song(const uuids::uuid& musicDirId, const std::wstring& filepath, const TagLib::FileRef& fileref) : Songs::Song::Song(musicDirId, filepath)
-//{
-//	const auto title = fileref.tag()->title();
-//	std::cout << "title is: " << title << std::endl;
-//	auto test = std::wstring(title.toCWString());
-//	std::cout << "test title is: " << test << std::endl;
-//	m_Title = title.toWString();
-//	m_Album = fileref.tag()->album().toWString();
-//	m_Artist = L"Test";// fileref.tag()->artist().toWString();
-//	m_Genre = fileref.tag()->genre().toWString();
-//	m_PlayTimeInSeconds = fileref.audioProperties()->lengthInSeconds();
-//	std::cout << "finished loading song tags" << std::endl;
-//}
-
 Songs::Song::Song(const uuids::uuid& musicDirId, const std::wstring& filePath)
 {
-	m_MusicDirId = musicDirId;
 	m_Filepath = filePath;
-	const auto& fp = filePath.c_str();
-
-	std::wcout << "filepath: " << fp << std::endl;
-
-	TagLib::FileRef fileref(fp);
+	m_MusicDirId = musicDirId;
+	TagLib::FileRef fileref(filePath.c_str());
 	if (!fileref.isNull() && fileref.tag())
 	{
-		const auto title = fileref.tag()->title();
-		std::cout << "title is: " << title << std::endl;
-		auto test = std::wstring(title.toCWString());
-		std::cout << "test title is: " << test << std::endl;
-		m_Title = title.toWString();
+		m_Title = fileref.tag()->title().toWString();
 		m_Album = fileref.tag()->album().toWString();
-		m_Artist = L"Test";// fileref.tag()->artist().toWString();
+		m_Artist = fileref.tag()->artist().toWString();
 		m_Genre = fileref.tag()->genre().toWString();
 		m_PlayTimeInSeconds = fileref.audioProperties()->lengthInSeconds();
-		std::cout << "finished loading song tags" << std::endl;
 	}
 	fileref.~FileRef();
 }
-
-//Songs::Song::Song(const uuids::uuid& musicDirId, const std::wstring& filepath, const std::shared_ptr<TagLib::FileRef> fileref) : Songs::Song::Song(musicDirId, filepath)
-//{
-//	const auto& title = fileref->tag()->title().toWString();
-//	std::cout << "title is: " << title << std::endl;
-//	m_Title = fileref->tag()->title().toWString();
-//	
-//	const auto& album = fileref->tag()->album().toWString();
-//	std::cout << "album is: " << album << std::endl;
-//	m_Album = fileref->tag()->album().toWString();
-//	
-//	const auto& artist = fileref->tag()->artist().toWString();
-//	std::cout << "artist is: " << artist << std::endl;
-//	m_Artist = artist; // fileref->tag()->artist().toWString();
-//	
-//	const auto& genre = fileref->tag()->genre().toWString();
-//	std::cout << "genre is: " << genre << std::endl;
-//	m_Genre = fileref->tag()->genre().toWString();
-//	m_PlayTimeInSeconds = fileref->audioProperties()->lengthInSeconds();
-//}
 
 uuids::uuid Songs::Song::GetMusicDirectoryId()
 {

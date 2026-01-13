@@ -19,6 +19,8 @@ namespace AppState
 		void AddMusicDirectory(const std::wstring& dirPath);
 		void RemoveDirectory(const std::wstring& directory);
 		void PlaySong(std::shared_ptr<Songs::Song> song);
+		bool IsSongPlaying();
+		void PauseCurrentSong();
 		std::shared_ptr<Songs::Song> GetCurrentSong();
 	};
 }

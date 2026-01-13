@@ -30,6 +30,16 @@ void AppState::ApplicationState::PlaySong(std::shared_ptr<Songs::Song> song)
 	m_Player->SetAndPlaySong(song);
 }
 
+bool AppState::ApplicationState::IsSongPlaying()
+{
+	return m_Player->IsSongPlaying();
+}
+
+void AppState::ApplicationState::PauseCurrentSong()
+{
+	m_Player->Stop();
+}
+
 std::shared_ptr<Songs::Song> AppState::ApplicationState::GetCurrentSong()
 {
 	return m_Player->GetCurrentSong();

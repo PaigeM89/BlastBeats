@@ -19,6 +19,7 @@ void MusicPlayer::Player::StartCurrentSong()
 void MusicPlayer::Player::SetAndPlaySong(std::shared_ptr<Songs::Song> song)
 {
 	m_CurrentSong = song;
+	m_IsSongPlaying = true;
 	StartCurrentSong();
 }
 
@@ -31,7 +32,14 @@ void MusicPlayer::Player::Play()
 
 void MusicPlayer::Player::Stop()
 {
+	m_IsSongPlaying = false;
 	m_Music->pause();
+}
+
+bool MusicPlayer::Player::IsSongPlaying()
+{
+	if (m_CurrentSong == nullptr) return false;
+	return m_IsSongPlaying;
 }
 
 std::shared_ptr<Songs::Song> MusicPlayer::Player::GetCurrentSong()
@@ -41,6 +49,7 @@ std::shared_ptr<Songs::Song> MusicPlayer::Player::GetCurrentSong()
 
 MusicPlayer::Player::Player()
 {
+	m_IsSongPlaying = false;
 	m_Music = std::make_unique<sf::Music>();
 }
 
