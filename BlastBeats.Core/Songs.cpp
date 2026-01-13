@@ -65,21 +65,21 @@ std::vector<std::wstring> Songs::GetAllFilepaths(const std::filesystem::path& ro
 
 static std::shared_ptr<Songs::Song> ReadSong(const uuids::uuid musicDirId, const std::wstring& filepath)
 {
-	TagLib::FileRef fileref(filepath.c_str());
+	//TagLib::FileRef fileref(filepath.c_str());
 	//std::shared_ptr<TagLib::FileRef> fileref = std::make_shared<TagLib::FileRef>(filepath.c_str());
-	if (!fileref.isNull() && fileref.tag())
-	{
-		const auto& song = std::make_shared<Songs::Song>(musicDirId, filepath);
-		fileref.~FileRef(); // do i need to do this? will it auto-delete when it goes out of scope?
-		return song;
+	/*if (!fileref.isNull() && fileref.tag())
+	{*/
+	const auto& song = std::make_shared<Songs::Song>(musicDirId, filepath);
+		//fileref.~FileRef(); // do i need to do this? will it auto-delete when it goes out of scope?
+	return song;
 		//auto title = fileref.tag()->title().toWString();
 		//auto album = fileref.tag()->album().toWString();
 		//auto artist = fileref.tag()->artist().toWString();
 		//auto genre = fileref.tag()->genre().toWString();
 		//return std::make_shared<Songs::Song>(musicDirId, filepath, title, album, artist, genre);
-	}
-	fileref.~FileRef();
-	return std::make_shared<Songs::Song>();
+	//}
+	//fileref.~FileRef();
+	//return std::make_shared<Songs::Song>();
 }
 
 static void LoadAllSongs(const uuids::uuid musicDirId, std::shared_ptr<Songs::SongManager> songList, const std::vector<std::wstring>& songPaths)
@@ -113,7 +113,11 @@ Songs::Song::Song(const uuids::uuid& musicDirId, const std::wstring& filePath)
 {
 	m_MusicDirId = musicDirId;
 	m_Filepath = filePath;
-	TagLib::FileRef fileref(filePath.c_str());
+	const auto& fp = filePath.c_str();
+
+	std::wcout << "filepath: " << fp << std::endl;
+
+	TagLib::FileRef fileref(fp);
 	if (!fileref.isNull() && fileref.tag())
 	{
 		const auto title = fileref.tag()->title();

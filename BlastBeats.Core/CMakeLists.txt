@@ -28,7 +28,7 @@ FetchContent_MakeAvailable(SFML)
 
 target_compile_features(BlastBeats.Core PRIVATE cxx_std_20)
 
-# find_package(ZLIB REQUIRED)
+find_package(ZLIB REQUIRED)
 
 # this is an older version - might have to use a submodule after all
 # find_package(taglib CONFIG REQUIRED)
@@ -36,10 +36,10 @@ target_compile_features(BlastBeats.Core PRIVATE cxx_std_20)
 # find_package(TagLib REQUIRED)
 
 include_directories(
-    ${CMAKE_SOURCE_DIR}/taglib/taglib
+    ${CMAKE_SOURCE_DIR}/external/taglib/include
 )
 
-find_library(TagLibPath NAMES taglib tag HINTS ${CMAKE_SOURCE_DIR}/external/taglib/taglib/Release)
+find_library(TagLibPath NAMES taglib tag HINTS ${CMAKE_SOURCE_DIR}/external/taglib/lib)
 
 if(NOT TagLibPath)
     message(FATAL_ERROR "Failed to find TagLib library!")
@@ -57,19 +57,20 @@ target_link_libraries(BlastBeats.Core
         Uuids
 
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/external/taglib/Release/tag.lib
+        # ${CMAKE_SOURCE_DIR}/external/taglib/Release/tag.lib
         # taglib dependency, not sure this is needed
-        # ZLIB::ZLIB
+        ZLIB::ZLIB
 
         # i dunno man, just try shit, maybe something will work
         # tag
         # taglibdfdfdfdfd (this fails silently lol)
-        # TagLib
+        TagLib
 
         # these are what the taglib docs say to link
         # taglib::tag
         # TagLib::tag_c
         # TagLib::TagLib
+
         SFML::Audio
 )
 
