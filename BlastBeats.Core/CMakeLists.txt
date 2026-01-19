@@ -2,6 +2,7 @@ add_library(BlastBeats.Core)
 
 target_sources(BlastBeats.Core
     PRIVATE
+        AppConfig.cpp
         AppState.cpp
         MusicDirectories.cpp
         MusicPlayer.cpp
@@ -11,6 +12,8 @@ target_sources(BlastBeats.Core
     PUBLIC
         FILE_SET HEADERS
         FILES
+            Helpers.h
+            AppConfig.h
             AppState.h
             MusicDirectories.h
             MusicPlayer.h
@@ -48,6 +51,11 @@ else()
     )
 endif()
 
+include(FetchContent)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
 target_link_libraries(BlastBeats.Core 
     PUBLIC
         Uuids
@@ -57,9 +65,8 @@ target_link_libraries(BlastBeats.Core
         ZLIB::ZLIB
         TagLib
         SFML::Audio
+        nlohmann_json::nlohmann_json
 )
-
-
 
 target_compile_definitions(BlastBeats.Core PRIVATE TAGLIB_STATIC)
 

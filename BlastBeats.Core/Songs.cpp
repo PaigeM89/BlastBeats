@@ -4,6 +4,7 @@
 #include <taglib/fileref.h>
 #include <iostream>
 #include <thread>
+#include "MusicDirectories.h"
 
 // https://github.com/taglib/taglib/blob/master/examples/tagreader.cpp
 

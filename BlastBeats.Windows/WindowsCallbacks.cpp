@@ -2,6 +2,7 @@
 #include <Helpers.h>
 #include <string>
 #include <memory>
+#include <ShlObj_core.h>
 #include <ShObjIdl_core.h>
 #include <WindowsCallbacks.h>
 
@@ -53,7 +54,19 @@ std::string WCharToUtf8(const std::wstring& wstr)
     return utf8str;
 }
 
+std::wstring GetUserDirPath()
+{
+    PWSTR path = NULL;
+    HRESULT hr = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &path);
+    std::wstring localAppDataPath{};
+    if (SUCCEEDED(hr)) {
+        localAppDataPath = path;
+        CoTaskMemFree(path); // Free the memory allocated by the function
+    }
+    return localAppDataPath;
+}
+
 std::shared_ptr<Helpers::Callbacks> WindowsHelpers::CreateCallbacks()
 {
-    return std::make_shared<Helpers::Callbacks>(FileOpenDialog, WCharToUtf8);
+    return std::make_shared<Helpers::Callbacks>(FileOpenDialog, WCharToUtf8, GetUserDirPath);
 }

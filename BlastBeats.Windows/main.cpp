@@ -6,8 +6,8 @@
 
 int main(int, char**) {
     printf("BLASTBEATS: Hello from BlastBeats!\n");
-    const auto& appState = std::make_shared<AppState::ApplicationState>();
     const auto& callbacks = WindowsHelpers::CreateCallbacks();
+    const auto& appState = std::make_shared<AppState::ApplicationState>(callbacks);
 
     MainGui::Render(appState, callbacks);
 

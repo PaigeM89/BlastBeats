@@ -2,7 +2,10 @@
 #include "MusicDirectories.h"
 #include <memory>
 #include <mutex>
+#include <fstream>
 #include <filesystem>
+#include <nlohmann/json.hpp>
+#include <iostream>
 
 
 void MusicDirectories::ReadSongsIntoSongManager(std::stop_token stopToken, SongLoadingThreadData threadData)
@@ -71,15 +74,27 @@ void MusicDirectories::MusicDirectoryManager::RemoveSongsInDirectory(const uuids
 	this->m_SongManager->RemoveSongsWithDirectoryId(musicDirId);
 }
 
-MusicDirectories::MusicDirectoryManager::MusicDirectoryManager()
+MusicDirectories::MusicDirectoryManager::MusicDirectoryManager(std::shared_ptr<AppConfig::Config> config, std::shared_ptr<Helpers::Callbacks> callbacks)
 {
 	this->m_SongManager = std::make_shared<Songs::SongManager>(0);
+	this->m_Callbacks = callbacks;
+	this->m_Config = config;
+	if (config->GetMusicDirs().size() > 0)
+	{
+		for (const auto& dir : config->GetMusicDirs())
+		{
+			auto musicDir = CreateMusicDirectory(dir);
+			m_MusicDirectories.push_back(musicDir);
+			ReadSongsInDirectory(musicDir);
+		}
+	}
 }
 
 void MusicDirectories::MusicDirectoryManager::AddDirectory(const std::wstring& dirPath)
 {
 	auto musicDir = CreateMusicDirectory(dirPath);
 	m_MusicDirectories.push_back(musicDir);
+	m_Config->AddMusicDirectory(dirPath);
 	ReadSongsInDirectory(musicDir);
 }
 
@@ -109,37 +124,8 @@ void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const uuids::uuid&
 		});
 }
 
-//void MusicDirectories::MusicDirectoryManager::Update(std::shared_ptr<Messages::MusicDirectoryChanged> msg)
-//{
-//	if (msg->FlaggedForRemoval)
-//	{
-//		for (auto& mdir : m_MusicDirectories)
-//		{
-//			if (mdir->m_Id == msg->Id)
-//			{
-//				mdir->m_FlaggedForRemoval = true;
-//				return;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		for (auto& mdir : m_MusicDirectories)
-//		{
-//			if (mdir->m_Id == msg->Id)
-//			{
-//				mdir->m_DirPath = msg->DirPath;
-//				// todo: reload new directory, clean old songs as needed
-//				return;
-//			}
-//		}
-//		this->AddDirectory(msg->DirPath);
-//	}
-//}
-
 bool MusicDirectories::MusicDirectoryManager::IsLoadingSongs()
 {
-	//return m_SongManager->IsLoadingSongs();
 	return m_SongLoadingThreads.size() > 0;
 }
 
@@ -169,3 +155,4 @@ std::vector<std::shared_ptr<Songs::Song>> MusicDirectories::MusicDirectoryManage
 {
 	return m_SongManager->GetSongs();
 }
+

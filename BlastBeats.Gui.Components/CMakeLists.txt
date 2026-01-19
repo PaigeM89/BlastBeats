@@ -13,7 +13,6 @@ target_sources(BlastBeats.Gui.Components
             MusicDirectoryGui.h
             MusicPlayerGui.h
             SongsTable.h
-            Helpers.h
             SongQueueGui.h
 )
 

@@ -12,3 +12,5 @@ $env:Path += -join(";$env:TAGLIB_DST_DIR\taglib\Debug;",
 cmake --build $env:TAGLIB_DST_DIR --config Debug
 
 cmake --install $env:TAGLIB_DST_DIR --config Debug --prefix $env:TAGLIB_INSTALL_DIR --strip
+
+cd ..

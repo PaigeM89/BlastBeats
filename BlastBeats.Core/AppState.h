@@ -2,6 +2,8 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <Helpers.h>
+#include <AppConfig.h>
 #include "Songs.h"
 #include "MusicDirectories.h"
 #include "MusicPlayer.h"
@@ -11,11 +13,13 @@ namespace AppState
 {
 	class ApplicationState {
 	private:
+		std::shared_ptr<AppConfig::Config> m_Config;
 		std::shared_ptr<MusicDirectories::MusicDirectoryManager> m_MusicDirectoryManager;
 		std::shared_ptr<MusicPlayer::Player> m_Player; // should this be a unique pointer?
 		std::unique_ptr<SongQueue::Queue> m_Queue;
+		std::shared_ptr<Helpers::Callbacks> m_Callbacks;
 	public:
-		ApplicationState();
+		ApplicationState(std::shared_ptr<Helpers::Callbacks> callbacks);
 		std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> GetMusicDirectories();
 		std::vector<std::shared_ptr<Songs::Song>> GetSongs();
 		std::vector<std::shared_ptr<Songs::Song>> GetQueuedSongs();

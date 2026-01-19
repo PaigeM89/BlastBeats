@@ -4,11 +4,13 @@
 
 using namespace AppState;
 
-AppState::ApplicationState::ApplicationState()
+AppState::ApplicationState::ApplicationState(std::shared_ptr<Helpers::Callbacks> callbacks)
 {
-	m_MusicDirectoryManager = std::make_shared<MusicDirectories::MusicDirectoryManager>();
+	m_Config = std::make_shared<AppConfig::Config>(callbacks);
+	m_MusicDirectoryManager = std::make_shared<MusicDirectories::MusicDirectoryManager>(m_Config, callbacks);
 	m_Player = std::make_shared<MusicPlayer::Player>();
 	m_Queue = std::make_unique<SongQueue::Queue>();
+	m_Callbacks = callbacks;
 }
 
 std::vector<std::shared_ptr<MusicDirectories::MusicDirectory>> ApplicationState::GetMusicDirectories()

@@ -2,8 +2,8 @@
 #include <string>
 #include <memory>
 #include <mutex>
-// #include "Observers.h"
-// #include "Messages.h"
+#include <Helpers.h>
+#include <AppConfig.h>
 #include "Songs.h"
 #include <future>
 #include "Uuid.h"
@@ -33,7 +33,7 @@ namespace MusicDirectories {
 		/// </summary>
 		bool m_IsSelected = false;
 
-		MusicDirectory(std::wstring dirPath) {
+		MusicDirectory(std::wstring& dirPath) {
 			m_Id = uuids::uuid_system_generator{}();
 			m_DirPath = dirPath;
 		}
@@ -86,8 +86,7 @@ namespace MusicDirectories {
 			return _data.m_MusicDir->m_DirPath;
 		}
 
-		// delete these functions, according to AI
-		
+		// the following is from an AI summary, could be wrong!
 		// Explicitly delete copy operations
 		SongLoadingThreadManager(const SongLoadingThreadManager&) = delete;
 		SongLoadingThreadManager& operator=(const SongLoadingThreadManager&) = delete;
@@ -103,9 +102,11 @@ namespace MusicDirectories {
 	/// <summary>
 	/// Manages the directories used to load music, as well as the master list of song data.
 	/// </summary>
-	class MusicDirectoryManager // : public Observers::MusicDirectoryObserver
+	class MusicDirectoryManager
 	{
 	private:
+		std::shared_ptr<AppConfig::Config> m_Config;
+		std::shared_ptr<Helpers::Callbacks> m_Callbacks;
 		std::vector<SongLoadingThreadManager> m_SongLoadingThreads{};
 		std::vector<std::shared_ptr<MusicDirectory>> m_MusicDirectories{};
 		std::shared_ptr<Songs::SongManager> m_SongManager;
@@ -115,11 +116,10 @@ namespace MusicDirectories {
 		void RemoveSongsInDirectory(const uuids::uuid& musicDirId);
 		uuids::uuid GetMusicDirId(const std::wstring& dirPath);
 	public:
-		MusicDirectoryManager();
+		MusicDirectoryManager(std::shared_ptr<AppConfig::Config> config, std::shared_ptr<Helpers::Callbacks> callbacks);
 		void AddDirectory(const std::wstring& dirPath);
 		void RemoveDirectory(const std::wstring& directory);
 		void RemoveDirectory(const uuids::uuid& musicDirId);
-		// void Update(std::shared_ptr<Messages::MusicDirectoryChanged> msg) override;
 
 		bool IsLoadingSongs();
 		void CheckForCompletedThreads();
