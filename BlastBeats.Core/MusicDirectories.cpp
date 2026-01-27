@@ -124,6 +124,11 @@ void MusicDirectories::MusicDirectoryManager::RemoveDirectory(const uuids::uuid&
 		});
 }
 
+void MusicDirectories::MusicDirectoryManager::UnselectAllSongs()
+{
+	m_SongManager->UnselectAllSongs();
+}
+
 bool MusicDirectories::MusicDirectoryManager::IsLoadingSongs()
 {
 	return m_SongLoadingThreads.size() > 0;

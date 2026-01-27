@@ -88,4 +88,5 @@ std::vector<std::shared_ptr<Songs::Song>> AppState::ApplicationState::GetSelecte
 void AppState::ApplicationState::AddSongsToEndOfQueue(const std::vector<std::shared_ptr<Songs::Song>>& songs)
 {
 	m_Queue->AddSongsToEnd(songs);
+	m_MusicDirectoryManager->UnselectAllSongs();
 }

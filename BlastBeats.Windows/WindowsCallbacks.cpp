@@ -61,7 +61,7 @@ std::wstring GetUserDirPath()
     std::wstring localAppDataPath{};
     if (SUCCEEDED(hr)) {
         localAppDataPath = path;
-        CoTaskMemFree(path); // Free the memory allocated by the function
+        CoTaskMemFree(path);
     }
     return localAppDataPath;
 }

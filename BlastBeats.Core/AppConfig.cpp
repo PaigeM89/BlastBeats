@@ -51,10 +51,8 @@ void AppConfig::Config::LoadUserConfig()
 	std::wcout << "Reading config file at location: " << userDir << std::endl;
 
 	nlohmann::json data = nlohmann::json::parse(f);
-	//AppConfig::ConfigFields cf{};
 	auto cf = std::make_shared<AppConfig::ConfigFields>();
 	FromJson2(data, cf);
-	//m_ConfigFields = std::make_shared<AppConfig::ConfigFields>(cf);
 	m_ConfigFields = cf;
 	f.close();
 }

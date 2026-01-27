@@ -242,3 +242,11 @@ bool Songs::SongManager::IsLoadingSongs()
 {
 	return this->m_LoadingDirIds.size() > 0;
 }
+
+void Songs::SongManager::UnselectAllSongs()
+{
+	for (auto& song : m_Songs)
+	{
+		song->p_IsSelected = false;
+	}
+}

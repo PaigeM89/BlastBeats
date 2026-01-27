@@ -121,6 +121,8 @@ namespace MusicDirectories {
 		void RemoveDirectory(const std::wstring& directory);
 		void RemoveDirectory(const uuids::uuid& musicDirId);
 
+		void UnselectAllSongs();
+
 		bool IsLoadingSongs();
 		void CheckForCompletedThreads();
 		size_t GetSongCount();

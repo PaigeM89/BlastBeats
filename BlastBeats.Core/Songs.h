@@ -83,6 +83,7 @@ namespace Songs {
 		std::vector<std::shared_ptr<Song>> GetSongs();
 
 		void LoadSongs(std::stop_token stopToken, const uuids::uuid& musicDirId, const std::vector<std::wstring>& songPaths);
+		void UnselectAllSongs();
 
 		void RemoveSongsWithDirectoryId(const uuids::uuid& musicDirId);
 		bool IsLoadingSongs();
